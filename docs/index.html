@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Klimazwilling – Wo liegt heute dein Klima von morgen?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --amber:       #d97706;
+    --amber-dark:  #b45309;
+    --amber-light: #fef3c7;
+    --amber-glow:  rgba(217, 119, 6, 0.12);
+    --text:        #111827;
+    --muted:       #6b7280;
+    --border:      #d1d5db;
+    --bg-chip:     #f3f4f6;
+    --bg:          #ffffff;
+  }
+
+  html { font-size: 16px; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    border-top: 3px solid var(--amber);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Header ── */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 32px;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  .logo {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    text-decoration: none;
+  }
+  .logo span { color: var(--amber); }
+
+  .header-tag {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0.03em;
+  }
+
+  /* ── Main ── */
+  main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 72px 24px 96px;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    width: 100%;
+    max-width: 640px;
+    text-align: center;
+  }
+
+  .hero-label {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    color: var(--muted);
+    line-height: 1.65;
+    margin-bottom: 44px;
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ── Search form ── */
+  .search-form {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .input-wrap {
+    position: relative;
+    flex: 1;
+  }
+
+  .plz-input {
+    width: 100%;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text);
+    padding: 14px 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+    background: #fff;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    -moz-appearance: textfield;
+  }
+  .plz-input::placeholder { color: #9ca3af; font-weight: 400; }
+  .plz-input:focus {
+    border-color: var(--amber);
+    box-shadow: 0 0 0 3px var(--amber-glow);
+  }
+
+  /* ── Autocomplete dropdown ── */
+  .suggest-box {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0; right: 0;
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.10);
+    overflow: hidden;
+    z-index: 100;
+  }
+  .suggest-box.open { display: block; }
+  .suggest-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    transition: background 0.1s;
+  }
+  .suggest-item + .suggest-item { border-top: 1px solid #f3f4f6; }
+  .suggest-item:hover,
+  .suggest-item.active { background: var(--amber-light); }
+  .suggest-item .s-plz {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+    margin-left: 12px;
+  }
+
+  .submit-btn {
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    background: var(--amber);
+    border: none;
+    border-radius: 8px;
+    padding: 14px 22px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s, opacity 0.15s, transform 0.1s;
+    opacity: 0.45;
+    pointer-events: none;
+  }
+  .submit-btn.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .submit-btn.active:hover { background: var(--amber-dark); }
+  .submit-btn.active:active { transform: scale(0.98); }
+
+  /* ── Chips ── */
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    background: var(--bg-chip);
+    border: 1.5px solid transparent;
+    border-radius: 999px;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    user-select: none;
+  }
+  .chip:hover {
+    border-color: var(--amber);
+    background: var(--amber-light);
+  }
+  .chip .plz-tag {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── Divider ── */
+  .divider {
+    width: 100%;
+    max-width: 640px;
+    height: 1px;
+    background: #f3f4f6;
+    margin: 72px 0;
+  }
+
+  /* ── How it works ── */
+  .how {
+    width: 100%;
+    max-width: 760px;
+    text-align: center;
+  }
+
+  .how h2 {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 40px;
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+
+  .step {
+    text-align: left;
+    padding: 0 8px;
+  }
+
+  .step-num {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--amber-light);
+    line-height: 1;
+    margin-bottom: 12px;
+    /* Outlined effect */
+    -webkit-text-stroke: 1.5px var(--amber);
+    color: transparent;
+  }
+
+  .step-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .step-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ── Footer ── */
+  footer {
+    border-top: 1px solid #f3f4f6;
+    padding: 20px 32px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .footer-sources {
+    font-size: 12px;
+    color: #9ca3af;
+  }
+  .footer-sources a {
+    color: #9ca3af;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .footer-sources a:hover { color: var(--muted); }
+
+  .footer-disclaimer {
+    font-size: 12px;
+    color: #9ca3af;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    header { padding: 16px 20px; }
+    .header-tag { display: none; }
+    main { padding: 48px 20px 72px; }
+    .search-form { flex-direction: column; }
+    .submit-btn { width: 100%; }
+    .steps { grid-template-columns: 1fr; gap: 28px; }
+    .step { border-left: 2px solid #f3f4f6; padding-left: 20px; }
+    footer { flex-direction: column; align-items: flex-start; padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="/">Klima<span>zwilling</span></a>
+  <span class="header-tag">SSP2-4.5 · WorldClim 2.1</span>
+</header>
+
+<main>
+  <section class="hero">
+    <span class="hero-label">Klimaanalyse für Deutschland</span>
+
+    <h1>Wo liegt heute dein<br>Klima von morgen?</h1>
+
+    <p class="hero-sub">
+      Das Klima deiner Stadt im Jahr 2041–2060 existiert heute bereits – irgendwo in Südeuropa.
+      Gib deine Postleitzahl ein und finde deinen europäischen Klimazwilling.
+    </p>
+
+    <form class="search-form" id="searchForm" novalidate>
+      <div class="input-wrap">
+        <input
+          class="plz-input"
+          id="plzInput"
+          type="text"
+          maxlength="60"
+          placeholder="PLZ oder Ortsname, z. B. 93047 oder München"
+          autocomplete="off"
+          aria-label="Postleitzahl oder Ortsname"
+          aria-autocomplete="list"
+        >
+        <div class="suggest-box" id="suggestBox" role="listbox"></div>
+      </div>
+      <button class="submit-btn" id="submitBtn" type="submit">
+        Klimazwilling finden&nbsp;→
+      </button>
+    </form>
+
+    <div class="chips">
+      <button class="chip" data-plz="80331">München <span class="plz-tag">80331</span></button>
+      <button class="chip" data-plz="10115">Berlin <span class="plz-tag">10115</span></button>
+      <button class="chip" data-plz="20095">Hamburg <span class="plz-tag">20095</span></button>
+      <button class="chip" data-plz="50667">Köln <span class="plz-tag">50667</span></button>
+      <button class="chip" data-plz="60311">Frankfurt <span class="plz-tag">60311</span></button>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="how">
+    <h2>So funktioniert es</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Postleitzahl eingeben</div>
+        <div class="step-desc">Wir ermitteln die geografische Lage deiner Stadt und lesen die lokalen Klimadaten aus.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">Klimadaten vergleichen</div>
+        <div class="step-desc">Das Zukunftsklima (SSP2-4.5, 2041–2060) deiner Stadt wird mit dem heutigen Klima von über 1.000 europäischen Städten verglichen.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">Dein Klimazwilling</div>
+        <div class="step-desc">Die Stadt mit dem ähnlichsten heutigen Klima ist dein Klimazwilling – anschaulich auf der Karte und mit allen Vergleichswerten.</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span class="footer-sources">
+    Daten: <a href="https://www.worldclim.org" target="_blank" rel="noopener">WorldClim 2.1</a> ·
+    <a href="https://www.geonames.org" target="_blank" rel="noopener">GeoNames</a> ·
+    CMIP6 SSP2-4.5
+  </span>
+  <span class="footer-disclaimer">Keine Gewähr für die Richtigkeit der Angaben.</span>
+</footer>
+
+<script>
+  const input = document.getElementById('plzInput');
+  const btn   = document.getElementById('submitBtn');
+  const form  = document.getElementById('searchForm');
+  const box   = document.getElementById('suggestBox');
+
+  let INDEX    = null;
+  let activeIdx = -1;
+
+  function navigate(plz) {
+    window.location.href = `./result.html?plz=${plz}`;
+  }
+
+  function isPlzOnly(v) { return /^\d{5}$/.test(v); }
+  function syncBtn() { btn.classList.toggle('active', isPlzOnly(input.value)); }
+
+  // ── Index loading ──────────────────────────────────────────────────────────
+  async function loadIndex() {
+    if (INDEX !== null) return;
+    try {
+      INDEX = await fetch('./data/plz_index.json').then(r => r.json());
+    } catch(e) { INDEX = []; }
+  }
+
+  // ── Suggestions ────────────────────────────────────────────────────────────
+  function getSuggestions(q, max=8) {
+    if (!INDEX || q.length < 2) return [];
+    const ql = q.toLowerCase();
+    if (/^\d/.test(q)) {
+      return INDEX.filter(([p]) => p.startsWith(q)).slice(0, max);
+    }
+    const starts = [], contains = [];
+    for (const e of INDEX) {
+      const nl = e[1].toLowerCase();
+      if (nl.startsWith(ql)) starts.push(e);
+      else if (nl.includes(ql)) contains.push(e);
+      if (starts.length + contains.length >= max * 3) break;
+    }
+    return [...starts, ...contains].slice(0, max);
+  }
+
+  function closeSuggest() {
+    box.classList.remove('open');
+    activeIdx = -1;
+  }
+
+  function setActive(idx) {
+    const items = box.querySelectorAll('.suggest-item');
+    items.forEach(el => el.classList.remove('active'));
+    activeIdx = (idx >= 0 && idx < items.length) ? idx : -1;
+    if (activeIdx >= 0) items[activeIdx].classList.add('active');
+  }
+
+  function renderSuggestions(q) {
+    const items = getSuggestions(q);
+    if (!items.length) { closeSuggest(); return; }
+    activeIdx = -1;
+    box.innerHTML = items.map(([plz, name]) =>
+      `<div class="suggest-item" data-plz="${plz}" role="option">
+        <span>${name}</span><span class="s-plz">${plz}</span>
+      </div>`
+    ).join('');
+    box.classList.add('open');
+    box.querySelectorAll('.suggest-item').forEach(el => {
+      el.addEventListener('mousedown', e => { e.preventDefault(); navigate(el.dataset.plz); });
+    });
+  }
+
+  // ── Input events ──────────────────────────────────────────────────────────
+  input.addEventListener('focus', loadIndex);
+
+  input.addEventListener('input', () => {
+    const v = input.value;
+    if (/^\d/.test(v) || v === '') {
+      input.value = v.replace(/\D/g, '').slice(0, 5);
+    }
+    syncBtn();
+    if (INDEX) renderSuggestions(input.value);
+    else loadIndex().then(() => renderSuggestions(input.value));
+  });
+
+  input.addEventListener('keydown', e => {
+    const items = box.querySelectorAll('.suggest-item');
+    if (e.key === 'ArrowDown') {
+      e.preventDefault(); setActive(Math.min(activeIdx + 1, items.length - 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault(); setActive(Math.max(activeIdx - 1, -1));
+    } else if (e.key === 'Enter' && activeIdx >= 0) {
+      e.preventDefault(); navigate(items[activeIdx].dataset.plz);
+    } else if (e.key === 'Escape') {
+      closeSuggest();
+    }
+  });
+
+  input.addEventListener('blur', () => setTimeout(closeSuggest, 150));
+
+  // ── Form submit ────────────────────────────────────────────────────────────
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const items = box.querySelectorAll('.suggest-item');
+    if (isPlzOnly(input.value)) {
+      navigate(input.value);
+    } else if (activeIdx >= 0) {
+      navigate(items[activeIdx].dataset.plz);
+    } else if (items.length === 1) {
+      navigate(items[0].dataset.plz);
+    }
+  });
+
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => navigate(chip.dataset.plz));
+  });
+</script>
+
+</body>
+</html>

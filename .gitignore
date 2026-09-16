@@ -1,0 +1,25 @@
+# ── Rohdaten & Raster (zu groß für Git) ──────────────────────────────────────
+data/worldclim_2.1/
+data/candidates_eu.csv
+data/candidates_climate.csv
+data/DE.txt
+cities15000.txt
+cities15000.zip
+DE.zip
+geonames_readme.txt
+
+# ── Logs & temporäre Dateien ──────────────────────────────────────────────────
+logs/
+
+# ── Projektnotizen (nicht public) ────────────────────────────────────────────
+specs/
+
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# ── macOS ─────────────────────────────────────────────────────────────────────
+.DS_Store
