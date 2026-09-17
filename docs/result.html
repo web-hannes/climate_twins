@@ -126,7 +126,7 @@ main { flex: 1; max-width: 860px; margin: 0 auto; width: 100%; padding: 40px 24p
 /* ── Chart card ── */
 .chart-card {
   background: var(--surface); border: 1px solid var(--border);
-  border-radius: 12px; padding: 24px 20px 16px; overflow: hidden;
+  border-radius: 12px; padding: 24px 20px 16px; overflow-x: auto; overflow-y: hidden;
 }
 .twin-city-legend { display:flex; justify-content:space-between; font-size:12px; font-weight:600; color:#111827; margin-bottom:4px; padding:0 2px; }
 .twin-city-legend span { padding-bottom:0; }
@@ -198,7 +198,7 @@ canvas { display: block; width: 100%; height: auto; }
 .twin-country-name { font-size: 13px; color: var(--muted); margin-top: 2px; }
 .twin-coords { font-size: 12px; color: var(--light); margin-top: 3px; }
 .twin-dist-block { text-align: right; flex-shrink: 0; }
-.twin-dist-val { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -.02em; }
+.twin-dist-val { font-size: 18px; font-weight: 700; color: var(--text); letter-spacing: -.02em; white-space: nowrap; }
 .twin-dist-unit { font-size: 11px; color: var(--light); margin-top: 1px; }
 .dist-bar-wrap { width: 72px; height: 4px; background: var(--border); border-radius: 2px; margin: 6px 0 0 auto; }
 .dist-bar-fill { height: 100%; border-radius: 2px; transition: width .3s; }
@@ -220,6 +220,7 @@ canvas { display: block; width: 100%; height: auto; }
 .tr-bar-wrap { width: 64px; height: 3px; background: var(--border); border-radius: 2px; flex-shrink: 0; }
 .tr-bar-fill { height: 100%; border-radius: 2px; }
 .tr-dist { font-size: 12px; color: var(--muted); min-width: 32px; text-align: right; font-variant-numeric: tabular-nums; }
+.twin-note { font-size: 12px; color: var(--light); margin-top: 10px; padding: 0 4px; line-height: 1.55; }
 
 /* ── Error / loading ── */
 #loading, #error {
@@ -267,8 +268,8 @@ footer {
   .dist-bar-wrap { margin: 0; flex-shrink: 0; }
 
   /* ── Canvas: in voller Breite scrollbar ── */
-  .chart-card { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-left: 12px; padding-right: 12px; }
-  canvas { width: 820px; height: auto; }
+  .chart-card { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-left: 12px; padding-right: 0; }
+  canvas { width: 820px; height: auto; margin-right: 12px; }
 
   /* ── Twin-Zeilen: Balken ausblenden, kompakter ── */
   .twin-row { padding: 8px 12px; }
@@ -520,10 +521,8 @@ function ctx2(id) {
   if (!c.dataset.lw) { c.dataset.lw = c.getAttribute('width'); c.dataset.lh = c.getAttribute('height'); }
   const W = parseInt(c.dataset.lw);
   const H = parseInt(c.dataset.lh);
-  c.width        = W * dpr;
-  c.height       = H * dpr;
-  c.style.width  = W + 'px';
-  c.style.height = H + 'px';
+  c.width  = W * dpr;
+  c.height = H * dpr;
   const cx = c.getContext('2d');
   cx.scale(dpr, dpr);
   return cx;
@@ -782,10 +781,25 @@ const COUNTRIES = {
 const flag = cc => cc.toUpperCase().split('').map(c=>String.fromCodePoint(0x1F1E6-65+c.charCodeAt(0))).join('');
 const seasonalTavg = feat => ['DJF','MAM','JJA','SON'].reduce((s,k)=>s+(feat[`tasmin_${k}`]+feat[`tasmax_${k}`])/2, 0) / 4;
 
-let _twins=null, _currentMode='A', _currentPeriod='2041-2060', _cityName='', _histTavg=0, _p21Tavg=0;
+// Balken-Skalierung: 0.0–0.4 = erste 10% (sehr gut), 0.4–1.4 = 90%→10%, danach 0%
+function matchBar(d) {
+  if (d <= 0.4) return Math.round(100 - (d / 0.4) * 10);
+  return Math.max(0, Math.round(90 - ((d - 0.4) / 1.0) * 80));
+}
+
+let _twins=null, _currentMode='A', _currentPeriod='2041-2060', _cityName='', _histTavg=0, _p21Tavg=0, _cityLat=0, _cityLon=0;
+
+function haversineKm(lat1, lon1, lat2, lon2) {
+  const R = 6371, rad = Math.PI / 180;
+  const dLat = (lat2 - lat1) * rad, dLon = (lon2 - lon1) * rad;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*rad) * Math.cos(lat2*rad) * Math.sin(dLon/2)**2;
+  return Math.round(R * 2 * Math.asin(Math.sqrt(a)));
+}
 
 function renderTwins(city) {
   _cityName = city.name;
+  _cityLat  = city.lat;
+  _cityLon  = city.lon;
   document.getElementById('more-data-summary').textContent = `Mehr Klimadaten zu ${city.name}`;
   // annual mean from monthly historical data (1970-2000)
   _histTavg = city.historical.tmin.reduce((s,v,i) => s + (v + city.historical.tmax[i]) / 2, 0) / 12;
@@ -830,14 +844,13 @@ function _renderTwinView() {
   const refDesc = _currentMode === 'A' ? 'historischen Klima' : 'heutigen Klima';
   document.getElementById('twin-headline').innerHTML =
     `Das Klima von ${_cityName} im Jahr <span class="hl">${_currentPeriod}</span> entspricht dem <span class="hl">${refDesc}</span> von ${t1.name}, ${COUNTRIES[t1.country] || t1.country}.`;
-  const distMax = Math.max(...results.map(r=>r.distance));
-
   const targetFeat = _twins[_currentPeriod].target_features;
   const refTavg  = _currentMode === 'A' ? _histTavg : _p21Tavg;
   const refPeriod = _currentMode === 'A' ? '1970–2000' : '2021–2040';
   const warming  = seasonalTavg(targetFeat) - refTavg;
   const diffStr  = (warming >= 0 ? '+' : '') + warming.toFixed(1) + '°C';
   const diffLabel = `${refPeriod} → ${_currentPeriod}`;
+  const distKm   = haversineKm(_cityLat, _cityLon, t1.lat, t1.lon);
 
   // Top card
   document.getElementById('twin-top').innerHTML = `
@@ -850,7 +863,7 @@ function _renderTwinView() {
         <div class="twin-coords">${t1.population.toLocaleString('de-DE')} Einwohner</div>
       </div>
       <div class="twin-dist-block">
-        <div class="twin-dist-val">${diffStr}</div>
+        <div class="twin-dist-val">${diffStr} / ${distKm.toLocaleString('de-DE')} km</div>
         <div class="twin-dist-unit">${diffLabel}</div>
       </div>
     </div>`;
@@ -864,12 +877,14 @@ function _renderTwinView() {
     return `<div class="twin-row${top?' top':''}">
       <div class="tr-rank${top?' gold':''}">${top?'★':i+1}</div>
       <div class="tr-flag">${flag(r.country)}</div>
-      <div class="tr-name">${r.name} <span class="tr-country">${COUNTRIES[r.country]||r.country}</span></div>
-      <div class="tr-bar-wrap"><div class="tr-bar-fill" style="width:${Math.max(4,Math.round((1-r.distance/distMax)*100))}%;background:${top?'var(--amber)':'#9ca3af'}"></div></div>
+      <div class="tr-name">${r.name} <span class="tr-country">${COUNTRIES[r.country]||r.country} · ${haversineKm(_cityLat, _cityLon, r.lat, r.lon).toLocaleString('de-DE')} km</span></div>
+      <div class="tr-bar-wrap"><div class="tr-bar-fill" style="width:${Math.max(4,matchBar(r.distance))}%;background:${top?'var(--amber)':'#9ca3af'}"></div></div>
       <div class="tr-dist">${r.distance.toFixed(2)}</div>
     </div>`;
   }).join('');
-  document.getElementById('twin-list').innerHTML = `<div class="twin-list">${rows}</div>`;
+  document.getElementById('twin-list').innerHTML = `
+    <div class="twin-list">${rows}</div>
+    <p class="twin-note">Der Ähnlichkeitswert zeigt, wie gut das heutige Klima der Zwillingsstadt zu deinem künftigen Klima passt – <strong>0 = perfekte Übereinstimmung</strong>, je größer der Wert, desto schlechter die Übereinstimmung. Werte unter 1,0 gelten als gute Übereinstimmung.</p>`;
 }
 
 // ── Twin comparison chart ──────────────────────────────────────────────────────

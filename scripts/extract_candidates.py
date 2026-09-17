@@ -25,7 +25,7 @@ INPUT   = pathlib.Path(__file__).parent.parent / "cities15000.txt"
 OUT_DIR = pathlib.Path(__file__).parent.parent / "data"
 OUTPUT  = OUT_DIR / "candidates_eu.csv"
 
-MIN_POP = 100.000  # Mindesteinwohnerzahl
+MIN_POP = 25_000  # Mindesteinwohnerzahl
 
 # Länder-Codes nach Region
 SOUTH_EU = {
