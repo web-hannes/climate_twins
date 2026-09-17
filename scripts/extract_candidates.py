@@ -5,11 +5,13 @@ Ausgabe: data/candidates_eu.csv
 Felder:  id, name, ascii_name, country, lat, lon, population
 
 Regionen:
-  SOUTH_EU  — südeuropäische EU/Balkan-Länder
-  NORTH_AF  — Nordafrika (Marokko, Algerien, Tunesien, Libyen, Ägypten)
-              relevant als Klimazwillinge für 2061–2100-Szenarien
-  WEST_EU   — Frankreich, Spanien (bereits in SOUTH_EU), plus optionaler
-              Einschluss von Kerneuropa für vollständigeres Kandidatenpool
+  SOUTH_EU   — südeuropäische EU/Balkan-Länder
+  CENTRAL_EU — Deutschland, Frankreich, Benelux, Alpenländer, Mittel-/Osteuropa
+  EAST_EU    — Ukraine, Moldawien
+  NORTH_AF   — Nordafrika (Marokko, Algerien, Tunesien, Libyen, Ägypten)
+               relevant als Klimazwillinge für 2061–2100-Szenarien
+
+Ausgeschlossen: Skandinavien, Britische Inseln, Baltikum
 
 Mindestpopulation: 100.000 (anpassbar via MIN_POP)
 """
@@ -43,6 +45,27 @@ SOUTH_EU = {
     "TR",  # Türkei (klimatisch südeuropäisch/mediterran)
 }
 
+CENTRAL_EU = {
+    "DE",  # Deutschland
+    "FR",  # Frankreich
+    "AT",  # Österreich
+    "CH",  # Schweiz
+    "BE",  # Belgien
+    "NL",  # Niederlande
+    "LU",  # Luxemburg
+    "PL",  # Polen
+    "CZ",  # Tschechien
+    "SK",  # Slowakei
+    "HU",  # Ungarn
+    "RO",  # Rumänien
+    "BG",  # Bulgarien
+}
+
+EAST_EU = {
+    "UA",  # Ukraine
+    "MD",  # Moldawien
+}
+
 NORTH_AF = {
     "MA",  # Marokko
     "DZ",  # Algerien
@@ -52,7 +75,7 @@ NORTH_AF = {
 }
 
 # Alle einzuschließenden Länder
-INCLUDE = SOUTH_EU | NORTH_AF
+INCLUDE = SOUTH_EU | CENTRAL_EU | EAST_EU | NORTH_AF
 
 # GeoNames-Spaltennummern (0-basiert, Tab-getrennt)
 COL = {
@@ -116,6 +139,8 @@ def extract():
     print()
     print("Städte pro Land:")
     region_label = {c: "S-EU" for c in SOUTH_EU}
+    region_label.update({c: "C-EU" for c in CENTRAL_EU})
+    region_label.update({c: "E-EU" for c in EAST_EU})
     region_label.update({c: "N-AF" for c in NORTH_AF})
     for country, count in sorted(per_country.items(), key=lambda x: -x[1]):
         print(f"  {country}  ({region_label.get(country,'?'):4})  {count:4} Städte")
