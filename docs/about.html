@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Über das Projekt – Klimazwilling</title>
+<link rel="icon" type="image/svg+xml" href="./icons/icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --amber:      #d97706;
+  --amber-dark: #b45309;
+  --amber-bg:   #fffbeb;
+  --amber-glow: rgba(217,119,6,.1);
+  --text:       #111827;
+  --muted:      #6b7280;
+  --light:      #9ca3af;
+  --border:     #e5e7eb;
+  --surface:    #f9fafb;
+  --bg:         #ffffff;
+}
+
+html { font-size: 16px; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  border-top: 3px solid var(--amber);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Header ── */
+header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 32px;
+  border-bottom: 1px solid var(--border);
+}
+.logo { font-family: 'Bricolage Grotesque', sans-serif; font-size: 18px; font-weight: 800; color: var(--text); text-decoration: none; letter-spacing: -.02em; display: inline-flex; align-items: center; }
+.logo svg { margin-right: 10px; }
+.logo span { color: var(--amber); }
+.header-tag { font-size: 11px; font-weight: 500; color: var(--muted); letter-spacing: .03em; }
+
+/* ── Main ── */
+main { flex: 1; max-width: 860px; margin: 0 auto; width: 100%; padding: 40px 24px 80px; }
+
+/* ── Page intro ── */
+.page-title { font-size: clamp(26px, 4vw, 36px); font-weight: 700; letter-spacing: -.03em; margin-bottom: 10px; }
+.page-sub { font-size: 16px; color: var(--muted); line-height: 1.6; margin-bottom: 40px; }
+
+/* ── Carousel ── */
+.carousel-wrap { position: relative; margin-bottom: 16px; }
+.carousel {
+  display: flex; gap: 16px; overflow-x: auto;
+  scroll-snap-type: x mandatory; scroll-behavior: smooth;
+  padding: 4px 0 16px; -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; outline: none;
+}
+.carousel::-webkit-scrollbar { display: none; }
+.c-card {
+  scroll-snap-align: start; flex-shrink: 0;
+  width: min(340px, 82vw);
+  background: #fff; border: 1px solid var(--border);
+  border-radius: 16px; padding: 28px 24px;
+}
+.c-icon {
+  width: 40px; height: 40px; background: var(--amber-bg);
+  border-radius: 10px; display: flex; align-items: center;
+  justify-content: center; margin-bottom: 16px;
+}
+.c-card h3 { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 10px; line-height: 1.3; }
+.c-card p { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+.carousel-controls { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 52px; }
+.c-btn {
+  width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--border);
+  background: #fff; cursor: pointer; font-size: 15px;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.15s, background 0.15s; color: var(--text);
+}
+.c-btn:hover { border-color: var(--amber); background: var(--amber-bg); }
+.c-btn:disabled { opacity: 0.3; cursor: default; }
+.dots { display: flex; gap: 6px; align-items: center; }
+.dot { width: 6px; height: 6px; border-radius: 3px; background: var(--border); cursor: pointer; transition: all 0.2s; border: none; padding: 0; }
+.dot.active { width: 18px; background: var(--amber); }
+
+/* ── Jump navigation ── */
+.jump-nav { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 40px; }
+.jump-nav .jn-label { font-size: 12px; color: var(--light); font-weight: 500; }
+.jump-nav a {
+  font-size: 13px; font-weight: 500; color: var(--muted);
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 999px; padding: 5px 14px; text-decoration: none;
+  transition: border-color 0.15s, color 0.15s;
+}
+.jump-nav a:hover { border-color: var(--amber); color: var(--amber); }
+
+/* ── Fact blocks ── */
+.fact-block { padding: 40px 0; border-top: 1px solid var(--border); }
+.fact-block h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px; }
+.fact-block p, .fact-block li { font-size: 15px; color: var(--muted); line-height: 1.75; }
+.fact-block ul { padding-left: 20px; }
+.fact-block li { margin-bottom: 6px; }
+.source-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+.source-list li strong { display: block; color: var(--text); font-size: 15px; }
+.source-list li span { font-size: 14px; color: var(--muted); }
+.source-list li a { color: var(--muted); }
+.source-list li a:hover { color: var(--amber); }
+
+/* ── Back link ── */
+.back-link { display: block; text-align: center; font-size: 14px; color: var(--muted); text-decoration: none; margin-top: 48px; margin-bottom: 0; }
+.back-link:hover { color: var(--amber); }
+
+/* ── Footer ── */
+footer {
+  border-top: 1px solid var(--border); padding: 20px 32px;
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px;
+}
+.footer-left { display: flex; flex-direction: column; gap: 3px; }
+.footer-sources { font-size: 12px; color: var(--light); }
+.footer-sources a { color: var(--light); text-decoration: underline; text-underline-offset: 2px; }
+.footer-sources a:hover { color: var(--muted); }
+.footer-disclaimer { font-size: 12px; color: var(--light); }
+.footer-nav { display: flex; gap: 16px; }
+.footer-nav a { font-size: 12px; color: var(--light); text-decoration: none; }
+.footer-nav a:hover { color: var(--muted); }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  header { padding: 16px 20px; }
+  .header-tag { display: none; }
+  main { padding: 28px 16px 60px; }
+  footer { flex-direction: column; padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="./index.html">
+    <svg width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect width="64" height="64" rx="14" fill="#d97706"/>
+      <path d="M32 14 A18 18 0 0 0 32 50 Z" fill="#FFFFFF"/>
+      <line x1="14" y1="26" x2="32" y2="26" stroke="#d97706" stroke-width="3"/>
+      <line x1="14" y1="38" x2="32" y2="38" stroke="#d97706" stroke-width="3"/>
+      <line x1="32" y1="26" x2="49" y2="26" stroke="#FFFFFF" stroke-width="3"/>
+      <line x1="32" y1="38" x2="49" y2="38" stroke="#FFFFFF" stroke-width="3"/>
+      <circle cx="32" cy="32" r="18" fill="none" stroke="#FFFFFF" stroke-width="4"/>
+    </svg>Klima<span>zwilling</span>
+  </a>
+  <span class="header-tag">SSP2-4.5 · WorldClim 2.1</span>
+</header>
+
+<main>
+  <h1 class="page-title">Über das Projekt</h1>
+  <p class="page-sub">Was steckt hinter Klimazwilling, wie verlässlich ist es — und wo sind die Grenzen?</p>
+
+  <!-- Carousel -->
+  <div class="carousel-wrap">
+    <div class="carousel" id="carousel" role="list" aria-label="Kernaussagen">
+
+      <div class="c-card" role="listitem">
+        <div class="c-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 1 7 7c0 2.5-1.3 4.7-3.2 6L12 17l-3.8-2C6.3 13.7 5 11.5 5 9a7 7 0 0 1 7-7z"/></svg>
+        </div>
+        <h3>Warum Klimazwillinge?</h3>
+        <p>„+2 °C" bleibt abstrakt. Eine Stadt, die man kennt und die heute schon so warm ist, macht die Zukunft greifbar — mit echtem Namen, echten Sommern.</p>
+      </div>
+
+      <div class="c-card" role="listitem">
+        <div class="c-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="6"/><circle cx="15" cy="12" r="6"/></svg>
+        </div>
+        <h3>Ein Zwilling, kein Klon</h3>
+        <p>Verglichen werden Temperatur und Niederschlag in allen vier Jahreszeiten. Beides prägt das Klima stark, bildet es aber nicht vollständig ab.</p>
+      </div>
+
+      <div class="c-card" role="listitem">
+        <div class="c-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><path d="M3 18l2 2 4-4" stroke="#d97706" stroke-width="2"/></svg>
+        </div>
+        <h3>Was noch fehlt</h3>
+        <p>Nicht berücksichtigt: Luftfeuchte, Wind, Sonnenstunden, Tageslänge, Extremereignisse wie Starkregen oder langanhaltende Dürrephasen.</p>
+      </div>
+
+      <div class="c-card" role="listitem">
+        <div class="c-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c1.5-3 4-4.5 6-4.5s4 3 6 3 4.5-1.5 6-4.5"/><path d="M2 18c1.5-3 4-4.5 6-4.5s4 3 6 3 4.5-1.5 6-4.5"/></svg>
+        </div>
+        <h3>Folgen jenseits des Thermometers</h3>
+        <p>Klimawandel wirkt auch auf Wasserversorgung, Ernten, Wälder, Gesundheit und Artenvielfalt. Das zeigt der Zwilling nicht.</p>
+      </div>
+
+      <div class="c-card" role="listitem">
+        <div class="c-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="7" height="14"/><rect x="14" y="3" width="7" height="18"/><path d="M10 12h4"/></svg>
+        </div>
+        <h3>Unsere Städte sind nicht dafür gebaut</h3>
+        <p>Südliche Zwillingsstädte haben helle Fassaden, Schatten, enge Gassen, Fensterläden. Unsere Städte sind auf Kälte ausgelegt — dieselbe Hitze fühlt sich hier deutlich heftiger an.</p>
+      </div>
+
+      <div class="c-card" role="listitem">
+        <div class="c-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>
+        </div>
+        <h3>2 Grad sind viel</h3>
+        <p>Ein kleiner Anstieg im Mittel verschiebt die Extreme stark: deutlich mehr Hitzetage, mehr tropische Nächte, längere Hitzewellen.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="carousel-controls">
+    <button class="c-btn" id="c-prev" aria-label="Zurück">&#8592;</button>
+    <div class="dots">
+      <button class="dot active" aria-label="Karte 1"></button>
+      <button class="dot" aria-label="Karte 2"></button>
+      <button class="dot" aria-label="Karte 3"></button>
+      <button class="dot" aria-label="Karte 4"></button>
+      <button class="dot" aria-label="Karte 5"></button>
+      <button class="dot" aria-label="Karte 6"></button>
+    </div>
+    <button class="c-btn" id="c-next" aria-label="Weiter">&#8594;</button>
+  </div>
+
+  <!-- Hard facts -->
+
+  <div class="fact-block" id="klimamodell">
+    <h2>Klimamodell</h2>
+    <p>WorldClim 2.1 bietet hochaufgelöste Klimaprojektionen basierend auf einem Ensemble von fünf CMIP6-Klimamodellen: EC-Earth3-Veg, IPSL-CM6A-LR, MIROC6, MPI-ESM1-2-HR und MRI-ESM2-0. Als Emissionspfad wird SSP2-4.5 verwendet — ein mittleres Szenario, das weder das Schlimmste noch das Beste annimmt. Die räumliche Auflösung beträgt 10 Bogenminuten (ca. 18 km). Als historische Referenz dienen die Klimanormale 1970–2000. Betrachtet werden vier Zukunftszeiträume: 2021–2040, 2041–2060, 2061–2080 und 2081–2100.</p>
+  </div>
+
+  <div class="fact-block" id="quellen">
+    <h2>Quellen</h2>
+    <ul class="source-list">
+      <li>
+        <strong>WorldClim 2.1</strong>
+        <span>Fick, S. E. &amp; Hijmans, R. J. (2017). WorldClim 2: new 1-km spatial resolution climate surfaces for global land areas. <em>International Journal of Climatology</em>, 37(12), 4302–4315. — <a href="https://www.worldclim.org" target="_blank" rel="noopener">worldclim.org</a></span>
+      </li>
+      <li>
+        <strong>CMIP6 – Coupled Model Intercomparison Project Phase 6</strong>
+        <span>Globales Klimamodell-Ensemble, das die Grundlage für die WorldClim-Zukunftsprojektionen bildet.</span>
+      </li>
+      <li>
+        <strong>GeoNames</strong>
+        <span>Geodatenbank für Städtenamen, Koordinaten und Einwohnerzahlen. Lizenz: Creative Commons Attribution 4.0. — <a href="https://www.geonames.org" target="_blank" rel="noopener">geonames.org</a></span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="fact-block" id="plz">
+    <h2>Postleitzahlen</h2>
+    <p>Die Postleitzahlen und ihre geografischen Koordinaten stammen aus den GeoNames-Postleitzahlendaten für Deutschland (Datei DE.zip). Die Daten stehen unter der Lizenz Creative Commons Attribution 4.0 International. Bei mehreren Einträgen pro Postleitzahl wird der geografische Mittelpunkt (Zentroid) verwendet.</p>
+  </div>
+
+  <div class="fact-block" id="methode">
+    <h2>Matching-Methode</h2>
+    <p>Für jede Postleitzahl berechnen wir saisonale Klimakennwerte im Zieljahr: mittlere Mindest- und Höchsttemperatur sowie Gesamtniederschlag für Winter (DJF), Frühling (MAM), Sommer (JJA) und Herbst (SON) — insgesamt 12 Merkmale. Diese werden z-standardisiert und dann für jede Kandidatenstadt ein euklidischer Abstand berechnet. Die fünf Kandidaten mit dem kleinsten Abstand sind die Klimazwillinge. Ein Wert von 0 bedeutet perfekte Übereinstimmung; je größer der Wert, desto unähnlicher das Klima. Es stehen zwei Vergleichsmodi zur Wahl: Modus A vergleicht das Zukunftsklima deiner Stadt mit dem historischen Klima (1970–2000) der Zwillinge; Modus B vergleicht es mit dem Klima der Zwillinge im Zeitraum 2021–2040.</p>
+  </div>
+
+  <div class="fact-block" id="grenzen">
+    <h2>Grenzen der Auswertung</h2>
+    <p>Klimazwilling ist ein Orientierungswerkzeug, keine Prognose. Folgende Aspekte werden nicht berücksichtigt:</p>
+    <ul>
+      <li>Luftfeuchtigkeit und gefühlte Temperatur</li>
+      <li>Windverhältnisse und Föhnlagen</li>
+      <li>Sonnenstunden und UV-Intensität</li>
+      <li>Tageslänge und Lichtqualität</li>
+      <li>Extremereignisse: Starkregen, Hagel, Dürren</li>
+      <li>Städtische Wärmeinseln</li>
+      <li>Stadtplanung und Bausubstanz</li>
+      <li>Ökologische und soziale Folgewirkungen</li>
+    </ul>
+  </div>
+
+  <div class="fact-block" id="technik">
+    <h2>Technik &amp; Datenschutz</h2>
+    <p>Diese Website wird als statische Seite über GitHub Pages gehostet. Es werden keine Cookies gesetzt und kein Nutzerverhalten getrackt. Google Fonts werden über das Google-CDN geladen; dabei wird die IP-Adresse an Google übertragen. Weitere Informationen findest du in der <a href="./privacy.html">Datenschutzerklärung</a>.</p>
+  </div>
+
+  <a class="back-link" href="./index.html">← Zurück zur Startseite</a>
+</main>
+
+<footer>
+  <div class="footer-left">
+    <span class="footer-sources">Daten: <a href="https://www.worldclim.org" target="_blank" rel="noopener">WorldClim 2.1</a> · <a href="https://www.geonames.org" target="_blank" rel="noopener">GeoNames</a> · CMIP6 SSP2-4.5</span>
+  </div>
+  <nav class="footer-nav">
+    <a href="./about.html">Über das Projekt</a>
+    <a href="./legal.html">Impressum</a>
+    <a href="./privacy.html">Datenschutz</a>
+  </nav>
+</footer>
+
+<script>
+const carousel = document.getElementById('carousel');
+const allCards = carousel.querySelectorAll('.c-card');
+const dotBtns = document.querySelectorAll('.dot');
+const prevBtn = document.getElementById('c-prev');
+const nextBtn = document.getElementById('c-next');
+let cur = 0;
+
+function goTo(i) {
+  cur = Math.max(0, Math.min(i, allCards.length - 1));
+  allCards[cur].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+  dotBtns.forEach((d, j) => d.classList.toggle('active', j === cur));
+  prevBtn.disabled = cur === 0;
+  nextBtn.disabled = cur === allCards.length - 1;
+}
+
+prevBtn.onclick = () => goTo(cur - 1);
+nextBtn.onclick = () => goTo(cur + 1);
+dotBtns.forEach((d, i) => d.onclick = () => goTo(i));
+goTo(0);
+
+let scrollTimer;
+carousel.addEventListener('scroll', () => {
+  clearTimeout(scrollTimer);
+  scrollTimer = setTimeout(() => {
+    let closest = 0, minDist = Infinity;
+    allCards.forEach((c, i) => {
+      const dist = Math.abs(c.getBoundingClientRect().left - carousel.getBoundingClientRect().left);
+      if (dist < minDist) { minDist = dist; closest = i; }
+    });
+    if (closest !== cur) goTo(closest);
+  }, 50);
+});
+
+carousel.setAttribute('tabindex', '0');
+carousel.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(cur - 1); }
+  if (e.key === 'ArrowRight') { e.preventDefault(); goTo(cur + 1); }
+});
+</script>
+
+</body>
+</html>

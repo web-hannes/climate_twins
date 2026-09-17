@@ -304,9 +304,9 @@
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
   }
-
+  .footer-left { display: flex; flex-direction: column; gap: 3px; }
   .footer-sources {
     font-size: 12px;
     color: #9ca3af;
@@ -317,11 +317,11 @@
     text-underline-offset: 2px;
   }
   .footer-sources a:hover { color: var(--muted); }
+  .footer-disclaimer { font-size: 12px; color: #9ca3af; }
+  .footer-nav { display: flex; gap: 16px; }
+  .footer-nav a { font-size: 12px; color: #9ca3af; text-decoration: none; }
+  .footer-nav a:hover { color: var(--muted); }
 
-  .footer-disclaimer {
-    font-size: 12px;
-    color: #9ca3af;
-  }
 
   /* ── Responsive ── */
   @media (max-width: 600px) {
@@ -341,10 +341,10 @@
 <header>
   <a class="logo" href="/">
     <svg width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <rect width="64" height="64" rx="14" fill="#CC7C2E"/>
+      <rect width="64" height="64" rx="14" fill="#d97706"/>
       <path d="M32 14 A18 18 0 0 0 32 50 Z" fill="#FFFFFF"/>
-      <line x1="14" y1="26" x2="32" y2="26" stroke="#CC7C2E" stroke-width="3"/>
-      <line x1="14" y1="38" x2="32" y2="38" stroke="#CC7C2E" stroke-width="3"/>
+      <line x1="14" y1="26" x2="32" y2="26" stroke="#d97706" stroke-width="3"/>
+      <line x1="14" y1="38" x2="32" y2="38" stroke="#d97706" stroke-width="3"/>
       <line x1="32" y1="26" x2="49" y2="26" stroke="#FFFFFF" stroke-width="3"/>
       <line x1="32" y1="38" x2="49" y2="38" stroke="#FFFFFF" stroke-width="3"/>
       <circle cx="32" cy="32" r="18" fill="none" stroke="#FFFFFF" stroke-width="4"/>
@@ -416,13 +416,16 @@
 </main>
 
 <footer>
-  <span class="footer-sources">
-    Daten: <a href="https://www.worldclim.org" target="_blank" rel="noopener">WorldClim 2.1</a> ·
-    <a href="https://www.geonames.org" target="_blank" rel="noopener">GeoNames</a> ·
-    CMIP6 SSP2-4.5
-  </span>
-  <span class="footer-disclaimer">Keine Gewähr für die Richtigkeit der Angaben.</span>
+  <div class="footer-left">
+    <span class="footer-sources">Daten: <a href="https://www.worldclim.org" target="_blank" rel="noopener">WorldClim 2.1</a> · <a href="https://www.geonames.org" target="_blank" rel="noopener">GeoNames</a> · CMIP6 SSP2-4.5</span>
+  </div>
+  <nav class="footer-nav">
+    <a href="./about.html">Über das Projekt</a>
+    <a href="./legal.html">Impressum</a>
+    <a href="./privacy.html">Datenschutz</a>
+  </nav>
 </footer>
+
 
 <script>
   const input = document.getElementById('plzInput');
