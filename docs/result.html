@@ -4,9 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Klimazwilling</title>
+<link rel="icon" type="image/svg+xml" href="./icons/icon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -46,7 +47,8 @@ header {
   padding: 18px 32px;
   border-bottom: 1px solid var(--border);
 }
-.logo { font-size: 17px; font-weight: 700; color: var(--text); text-decoration: none; letter-spacing: -.02em; }
+.logo { font-family: 'Bricolage Grotesque', sans-serif; font-size: 18px; font-weight: 800; color: var(--text); text-decoration: none; letter-spacing: -.02em; display: inline-flex; align-items: center; }
+.logo svg { margin-right: 10px; }
 .logo span { color: var(--amber); }
 .header-tag { font-size: 11px; font-weight: 500; color: var(--muted); letter-spacing: .03em; }
 
@@ -281,7 +283,16 @@ footer {
 <body>
 
 <header>
-  <a class="logo" href="./index.html">Klima<span>zwilling</span></a>
+  <a class="logo" href="./index.html">
+    <svg width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect width="64" height="64" rx="14" fill="#CC7C2E"/>
+      <path d="M32 14 A18 18 0 0 0 32 50 Z" fill="#FFFFFF"/>
+      <line x1="14" y1="26" x2="32" y2="26" stroke="#CC7C2E" stroke-width="3"/>
+      <line x1="14" y1="38" x2="32" y2="38" stroke="#CC7C2E" stroke-width="3"/>
+      <line x1="32" y1="26" x2="49" y2="26" stroke="#FFFFFF" stroke-width="3"/>
+      <line x1="32" y1="38" x2="49" y2="38" stroke="#FFFFFF" stroke-width="3"/>
+      <circle cx="32" cy="32" r="18" fill="none" stroke="#FFFFFF" stroke-width="4"/>
+    </svg>Klima<span>zwilling</span></a>
   <span class="header-tag">SSP2-4.5 · WorldClim 2.1</span>
 </header>
 
@@ -450,7 +461,7 @@ function render(D) {
   const { H: hist, F: future } = { H: D.historical, F: D.future };
 
   // Title
-  document.title = `${D.name} ${D.plz} – Klimazwilling`;
+  document.title = 'Klimazwilling';
 
   // City header
   document.getElementById('state-badge').textContent = D.state;
