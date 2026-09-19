@@ -62,11 +62,9 @@ footer {
 site-header, site-footer { display: contents; }
 
 @media (max-width: 600px) {
-  header { padding: 16px 20px; }
-  .logo { flex-shrink: 0; }
+  header { padding: 16px 20px; position: relative; }
   .header-tag {
-    flex: 1; min-width: 0; text-align: right;
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
   }
   footer { flex-direction: column; padding: 20px; }
 }
