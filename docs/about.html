@@ -8,45 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./styles.css">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --amber:      #d97706;
-  --amber-dark: #b45309;
-  --amber-bg:   #fffbeb;
-  --amber-glow: rgba(217,119,6,.1);
-  --text:       #111827;
-  --muted:      #6b7280;
-  --light:      #9ca3af;
-  --border:     #e5e7eb;
-  --surface:    #f9fafb;
-  --bg:         #ffffff;
-}
-
-html { font-size: 16px; }
-body {
-  font-family: 'Inter', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.6;
-  border-top: 3px solid var(--amber);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* ── Header ── */
-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 18px 32px;
-  border-bottom: 1px solid var(--border);
-}
-.logo { font-family: 'Bricolage Grotesque', sans-serif; font-size: 18px; font-weight: 800; color: var(--text); text-decoration: none; letter-spacing: -.02em; display: inline-flex; align-items: center; }
-.logo svg { margin-right: 10px; }
-.logo span { color: var(--amber); }
-.header-tag { font-size: 11px; font-weight: 500; color: var(--muted); letter-spacing: .03em; }
-
 /* ── Main ── */
 main { flex: 1; max-width: 860px; margin: 0 auto; width: 100%; padding: 40px 24px 80px; }
 
@@ -119,45 +82,15 @@ main { flex: 1; max-width: 860px; margin: 0 auto; width: 100%; padding: 40px 24p
 .back-link { display: block; text-align: center; font-size: 14px; color: var(--muted); text-decoration: none; margin-top: 48px; margin-bottom: 0; }
 .back-link:hover { color: var(--amber); }
 
-/* ── Footer ── */
-footer {
-  border-top: 1px solid var(--border); padding: 20px 32px;
-  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px;
-}
-.footer-left { display: flex; flex-direction: column; gap: 3px; }
-.footer-sources { font-size: 12px; color: var(--light); }
-.footer-sources a { color: var(--light); text-decoration: underline; text-underline-offset: 2px; }
-.footer-sources a:hover { color: var(--muted); }
-.footer-disclaimer { font-size: 12px; color: var(--light); }
-.footer-nav { display: flex; gap: 16px; }
-.footer-nav a { font-size: 12px; color: var(--light); text-decoration: none; }
-.footer-nav a:hover { color: var(--muted); }
-
-/* ── Responsive ── */
 @media (max-width: 600px) {
-  header { padding: 16px 20px; }
-  .header-tag { display: none; }
   main { padding: 28px 16px 60px; }
-  footer { flex-direction: column; padding: 20px; }
 }
 </style>
+<script src="./components.js" defer></script>
 </head>
 <body>
 
-<header>
-  <a class="logo" href="./index.html">
-    <svg width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <rect width="64" height="64" rx="14" fill="#d97706"/>
-      <path d="M32 14 A18 18 0 0 0 32 50 Z" fill="#FFFFFF"/>
-      <line x1="14" y1="26" x2="32" y2="26" stroke="#d97706" stroke-width="3"/>
-      <line x1="14" y1="38" x2="32" y2="38" stroke="#d97706" stroke-width="3"/>
-      <line x1="32" y1="26" x2="49" y2="26" stroke="#FFFFFF" stroke-width="3"/>
-      <line x1="32" y1="38" x2="49" y2="38" stroke="#FFFFFF" stroke-width="3"/>
-      <circle cx="32" cy="32" r="18" fill="none" stroke="#FFFFFF" stroke-width="4"/>
-    </svg>Klima<span>zwilling</span>
-  </a>
-  <span class="header-tag">SSP2-4.5 · WorldClim 2.1</span>
-</header>
+<site-header></site-header>
 
 <main>
   <h1 class="page-title">Über das Projekt</h1>
@@ -234,7 +167,6 @@ footer {
     <p>SSP2-4.5 ist das sogenannte „Middle of the Road"-Szenario: Emissionen bleiben bis Mitte des Jahrhunderts auf heutigem Niveau, sinken dann langsam, erreichen aber kein Netto-Null. Projizierte Erwärmung: ca. 2,4–2,8 °C bis 2100. Das Szenario entspricht grob dem heutigen Emissionspfad — mit bestehenden Maßnahmen wie dem Ausbau erneuerbarer Energien schätzt Climate Action Tracker (2025) rund 2,6 °C. (<a href="https://climateactiontracker.org/global/cat-thermometer/" target="_blank" rel="noopener">climateactiontracker.org</a>, <a href="https://www.dkrz.de/en/communication/climate-simulations/cmip6-en/the-ssp-scenarios" target="_blank" rel="noopener">dkrz.de</a>)</p>
   </div>
 
-
   <div class="fact-block" id="plz">
     <h2>Postleitzahlen</h2>
     <p>Die Postleitzahlen und ihre geografischen Koordinaten stammen aus den GeoNames-Postleitzahlendaten für Deutschland (Datei DE.zip). Die Daten stehen unter der Lizenz Creative Commons Attribution 4.0 International. Bei mehreren Einträgen pro Postleitzahl wird der geografische Mittelpunkt (Zentroid) verwendet. (<a href="https://www.geonames.org" target="_blank" rel="noopener">geonames.org</a>)</p>
@@ -269,16 +201,7 @@ footer {
   <a class="back-link" href="./index.html">← Zurück zur Startseite</a>
 </main>
 
-<footer>
-  <div class="footer-left">
-    <span class="footer-sources">Daten: <a href="https://www.worldclim.org" target="_blank" rel="noopener">WorldClim 2.1</a> · <a href="https://www.geonames.org" target="_blank" rel="noopener">GeoNames</a> · CMIP6 SSP2-4.5</span>
-  </div>
-  <nav class="footer-nav">
-    <a href="./about.html">Über das Projekt</a>
-    <a href="./legal.html">Impressum</a>
-    <a href="./privacy.html">Datenschutz</a>
-  </nav>
-</footer>
+<site-footer></site-footer>
 
 <script>
 const carousel = document.getElementById('carousel');

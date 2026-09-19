@@ -8,9 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./styles.css">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 :root {
   --amber:      #d97706;
   --amber-dark: #b45309;
@@ -29,28 +28,12 @@
   --p81: #dc2626;  /* red */
 }
 
-html { font-size: 16px; }
-body {
-  font-family: 'Inter', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.6;
-  border-top: 3px solid var(--amber);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+/* ── Header city mode ── */
+.header-tag.city-mode {
+  display: inline-flex; align-items: center; gap: 5px;
+  color: var(--text); text-decoration: none;
+  cursor: default; pointer-events: none;
 }
-
-/* ── Header ── */
-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 18px 32px;
-  border-bottom: 1px solid var(--border);
-}
-.logo { font-family: 'Bricolage Grotesque', sans-serif; font-size: 18px; font-weight: 800; color: var(--text); text-decoration: none; letter-spacing: -.02em; display: inline-flex; align-items: center; }
-.logo svg { margin-right: 10px; }
-.logo span { color: var(--amber); }
-.header-tag { font-size: 11px; font-weight: 500; color: var(--muted); letter-spacing: .03em; }
 
 /* ── Layout ── */
 main { flex: 1; max-width: 860px; margin: 0 auto; width: 100%; padding: 40px 24px 80px; }
@@ -91,29 +74,28 @@ main { flex: 1; max-width: 860px; margin: 0 auto; width: 100%; padding: 40px 24p
 }
 
 /* ── More-data collapsible ── */
-.more-data { margin-top: 48px; }
+.more-data { margin-top: 48px; display: flex; flex-direction: column; align-items: center; }
 .more-data summary {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--muted);
+  color: #fff;
   letter-spacing: .04em;
   cursor: pointer;
   user-select: none;
   list-style: none;
-  padding: 12px 0;
-  border-top: 1px solid var(--border);
+  padding: 10px 22px;
+  background: var(--amber);
+  border-radius: 999px;
 }
 .more-data summary::-webkit-details-marker { display: none; }
 .more-data summary::before {
   content: '';
   display: inline-block;
   width: 16px; height: 16px;
-  border: 1.5px solid var(--muted);
-  border-radius: 4px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%23ffffff' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-size: 14px;
   background-position: center;
   background-repeat: no-repeat;
@@ -121,9 +103,8 @@ main { flex: 1; max-width: 860px; margin: 0 auto; width: 100%; padding: 40px 24p
   flex-shrink: 0;
 }
 .more-data[open] summary::before { transform: rotate(180deg); }
-.more-data summary:hover { color: var(--text); }
-.more-data summary:hover::before { border-color: var(--text); }
-.more-data-body { padding-top: 32px; }
+.more-data summary:hover { background: var(--amber-dark); }
+.more-data-body { padding-top: 32px; width: 100%; }
 
 /* ── Chart card ── */
 .chart-card {
@@ -185,7 +166,6 @@ canvas { display: block; width: 100%; height: auto; }
   text-underline-offset: 4px;
 }
 
-
 .twin-top-card {
   border: 1px solid var(--border); border-radius: 12px;
   padding: 20px 24px; background: #fff;
@@ -231,28 +211,8 @@ canvas { display: block; width: 100%; height: auto; }
 #error { color: #dc2626; }
 .hidden { display: none !important; }
 
-/* ── Footer ── */
-footer {
-  border-top: 1px solid var(--border); padding: 20px 32px;
-  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px;
-}
-.footer-left { display: flex; flex-direction: column; gap: 3px; }
-.footer-sources { font-size: 12px; color: var(--light); }
-.footer-sources a { color: var(--light); text-decoration: underline; text-underline-offset: 2px; }
-.footer-sources a:hover { color: var(--muted); }
-.footer-disclaimer { font-size: 12px; color: var(--light); }
-.footer-nav { display: flex; gap: 16px; }
-.footer-nav a { font-size: 12px; color: var(--light); text-decoration: none; }
-.footer-nav a:hover { color: var(--muted); }
-
-
 @media (max-width: 600px) {
-  /* ── Grundlayout ── */
-  header { padding: 16px 20px; }
-  .header-tag { display: none; }
   main { padding: 28px 16px 60px; }
-  footer { flex-direction: column; padding: 20px; }
-
   /* ── Timeline-Controls: vertikal stapeln ── */
   .timeline-controls { flex-direction: column; align-items: center; gap: 12px; }
   .tl-side { align-items: center !important; text-align: center !important; }
@@ -284,22 +244,11 @@ footer {
   .tr-country { display: none; }
 }
 </style>
+<script src="./components.js" defer></script>
 </head>
 <body>
 
-<header>
-  <a class="logo" href="./index.html">
-    <svg width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <rect width="64" height="64" rx="14" fill="#d97706"/>
-      <path d="M32 14 A18 18 0 0 0 32 50 Z" fill="#FFFFFF"/>
-      <line x1="14" y1="26" x2="32" y2="26" stroke="#d97706" stroke-width="3"/>
-      <line x1="14" y1="38" x2="32" y2="38" stroke="#d97706" stroke-width="3"/>
-      <line x1="32" y1="26" x2="49" y2="26" stroke="#FFFFFF" stroke-width="3"/>
-      <line x1="32" y1="38" x2="49" y2="38" stroke="#FFFFFF" stroke-width="3"/>
-      <circle cx="32" cy="32" r="18" fill="none" stroke="#FFFFFF" stroke-width="4"/>
-    </svg>Klima<span>zwilling</span></a>
-  <span class="header-tag">SSP2-4.5 · WorldClim 2.1</span>
-</header>
+<site-header></site-header>
 
 <main>
   <div id="loading">Klimadaten werden geladen …</div>
@@ -342,8 +291,8 @@ footer {
       </div>
       <p class="twin-headline" id="twin-headline"></p>
       <div id="twin-top"></div>
+      <div class="twin-city-legend"><span id="twin-legend-target"></span><span id="twin-legend-twin"></span></div>
       <div class="chart-card" style="margin:0 0 10px;padding-top:14px">
-        <div class="twin-city-legend"><span id="twin-legend-target"></span><span id="twin-legend-twin"></span></div>
         <canvas id="c-twin" width="820" height="280"></canvas>
       </div>
       <div id="twin-list"></div>
@@ -353,31 +302,15 @@ footer {
       <summary id="more-data-summary">Mehr Klimadaten</summary>
       <div class="more-data-body">
 
-    <!-- Chart 1: Klimadiagramm -->
-    <div class="section">
-      <div class="section-title">Historisches Klima 1970–2000</div>
-      <div class="chart-card">
-        <canvas id="c1" width="820" height="360"></canvas>
-      </div>
-      <div class="legend">
-        <span class="li"><span class="ld" style="background:rgba(234,88,12,.2);border:1.5px solid #ea580c"></span>Temperaturspanne tmin–tmax</span>
-        <span class="li"><span class="ll" style="background:#d97706;height:2.5px"></span>Tagesmittel</span>
-        <span class="li"><span class="ll" style="background:#3b82f6"></span>tmin</span>
-        <span class="li"><span class="ll" style="background:#ea580c"></span>tmax</span>
-        <span class="li"><span class="ld" style="background:rgba(59,130,246,.35);border:1.5px solid #3b82f6"></span>Niederschlag mm</span>
-      </div>
-    </div>
-
     <!-- Chart 2: Warming trend -->
     <div class="section">
-      <div class="section-title">Jahresmitteltemperatur – Erwärmungstrend SSP2-4.5</div>
       <div class="chart-card">
         <canvas id="c2" width="820" height="220"></canvas>
       </div>
       <div class="legend">
         <span class="li"><span class="ld" style="background:#e0f2fe;border:1.5px solid #374151"></span>1970–2000</span>
         <span class="li"><span class="ld" style="background:#cffafe;border:1.5px solid var(--p21)"></span>2021–2040</span>
-        <span class="li"><span class="ld" style="background:#fef3c7;border:1.5px solid var(--p41)"></span>2041–2060 ★</span>
+        <span class="li"><span class="ld" style="background:#fef3c7;border:1.5px solid var(--p41)"></span>2041–2060</span>
         <span class="li"><span class="ld" style="background:#ffedd5;border:1.5px solid var(--p61)"></span>2061–2080</span>
         <span class="li"><span class="ld" style="background:#fee2e2;border:1.5px solid var(--p81)"></span>2081–2100</span>
         <span class="li" style="color:var(--light)">Balken = GCM-Spread</span>
@@ -386,14 +319,13 @@ footer {
 
     <!-- Chart 3: Monthly profiles -->
     <div class="section">
-      <div class="section-title">Monatlicher Temperaturgang – Ensemble-Mittel je Periode</div>
       <div class="chart-card">
         <canvas id="c3" width="820" height="280"></canvas>
       </div>
       <div class="legend">
         <span class="li"><span class="ll" style="background:#374151;height:3px"></span>1970–2000</span>
         <span class="li"><span class="ll" style="background:var(--p21)"></span>2021–2040</span>
-        <span class="li"><span class="ll" style="background:var(--p41);height:3px"></span>2041–2060 ★</span>
+        <span class="li"><span class="ll" style="background:var(--p41);height:3px"></span>2041–2060</span>
         <span class="li"><span class="ll" style="background:var(--p61)"></span>2061–2080</span>
         <span class="li"><span class="ll" style="background:var(--p81)"></span>2081–2100</span>
         <span class="li" style="color:var(--light)">Schattenband = tmin/tmax hist.</span>
@@ -402,7 +334,6 @@ footer {
 
     <!-- Chart 4: Precipitation -->
     <div class="section">
-      <div class="section-title">Monatlicher Niederschlag – Historisch vs. Zukunft</div>
       <div class="chart-card">
         <canvas id="c4" width="820" height="240"></canvas>
       </div>
@@ -414,23 +345,26 @@ footer {
       <div id="prec-note" style="font-size:12px;color:var(--light);margin-top:10px;padding:0 2px"></div>
     </div>
 
+    <!-- Chart 5: Seasonal warming -->
+    <div class="section">
+      <div class="chart-card">
+        <canvas id="c5" width="820" height="200"></canvas>
+      </div>
+      <div class="legend">
+        <span class="li"><span class="ld" style="background:#cffafe;border:1.5px solid var(--p21)"></span>2021–2040</span>
+        <span class="li"><span class="ld" style="background:#fef3c7;border:1.5px solid var(--p41)"></span>2041–2060</span>
+        <span class="li"><span class="ld" style="background:#ffedd5;border:1.5px solid var(--p61)"></span>2061–2080</span>
+        <span class="li"><span class="ld" style="background:#fee2e2;border:1.5px solid var(--p81)"></span>2081–2100</span>
+      </div>
+    </div>
+
       </div><!-- .more-data-body -->
     </details>
 
   </div><!-- #content -->
 </main>
 
-<footer>
-  <div class="footer-left">
-    <span class="footer-sources">Daten: <a href="https://www.worldclim.org" target="_blank" rel="noopener">WorldClim 2.1</a> · <a href="https://www.geonames.org" target="_blank" rel="noopener">GeoNames</a> · CMIP6 SSP2-4.5</span>
-  </div>
-  <nav class="footer-nav">
-    <a href="./about.html">Über das Projekt</a>
-    <a href="./legal.html">Impressum</a>
-    <a href="./privacy.html">Datenschutz</a>
-  </nav>
-</footer>
-
+<site-footer></site-footer>
 
 <script>
 // ── Data loading ──────────────────────────────────────────────────────────────
@@ -474,6 +408,7 @@ function render(D) {
   // City header
   document.getElementById('state-badge').textContent = D.state;
   document.getElementById('city-name').textContent   = D.name;
+  _scrollCity = D.name;
   document.getElementById('city-plz').textContent    = D.plz;
   document.getElementById('city-coords').textContent =
     `${Math.abs(D.lat).toFixed(4)}° ${D.lat>=0?'N':'S'} · ${Math.abs(D.lon).toFixed(4)}° ${D.lon>=0?'O':'W'}`;
@@ -481,15 +416,15 @@ function render(D) {
   // Stats
   const hTm    = annMean(hist.tmin, hist.tmax);
   const hPrec  = hist.prec.reduce((a,b)=>a+b,0);
-  const hSumTx = avg([hist.tmax[5],hist.tmax[6],hist.tmax[7]]);
+  const f21Tm  = avg(MODELS.map(m=>annMean(future['2021-2040'][m].tmin,future['2021-2040'][m].tmax)));
   const f41Tm  = avg(MODELS.map(m=>annMean(future['2041-2060'][m].tmin,future['2041-2060'][m].tmax)));
   const f81Tm  = avg(MODELS.map(m=>annMean(future['2081-2100'][m].tmin,future['2081-2100'][m].tmax)));
   const sign   = v => (v>=0?'+':'')+v.toFixed(1);
 
   document.getElementById('stats-row').innerHTML = `
     <div class="stat"><div class="v" data-val="${hTm}" data-dec="1" data-sfx="°C">–</div><div class="l">Jahresmittel 1970–2000</div></div>
-    <div class="stat"><div class="v" style="color:#ea580c" data-val="${hSumTx}" data-dec="1" data-sfx="°C">–</div><div class="l">Sommer-tmax ⌀ JJA</div></div>
-    <div class="stat"><div class="v" style="color:#d97706" data-val="${f41Tm-hTm}" data-dec="1" data-sfx="°C" data-signed="1">–</div><div class="l">Erwärmung bis 2041–2060</div></div>
+    <div class="stat"><div class="v" style="color:#d97706" data-val="${f21Tm-hTm}" data-dec="1" data-sfx="°C" data-signed="1">–</div><div class="l">Erwärmung bis 2021–2040</div></div>
+    <div class="stat"><div class="v" style="color:#ea580c" data-val="${f41Tm-hTm}" data-dec="1" data-sfx="°C" data-signed="1">–</div><div class="l">Erwärmung bis 2041–2060</div></div>
     <div class="stat"><div class="v" style="color:#dc2626" data-val="${f81Tm-hTm}" data-dec="1" data-sfx="°C" data-signed="1">–</div><div class="l">Erwärmung bis 2081–2100</div></div>
     <div class="stat"><div class="v" style="color:#3b82f6" data-val="${hPrec}" data-dec="0" data-sfx=" mm">–</div><div class="l">Jahresniederschlag hist.</div></div>
   `;
@@ -500,10 +435,7 @@ function render(D) {
   animateStats();
 
   // Draw charts
-  drawKlima(hist, future);
-  drawTrend(hist, future);
-  drawProfiles(hist, future);
-  drawPrec(hist, future);
+  _chartHist = hist; _chartFuture = future;
   renderTwins(D);
 }
 
@@ -532,19 +464,21 @@ function animateStats() {
 }
 
 // ── Drawing utilities ─────────────────────────────────────────────────────────
+let _chartHist = null, _chartFuture = null;
+
 function ctx2(id) {
-  const dpr = window.devicePixelRatio || 1;
-  const c   = document.getElementById(id);
-  // Cache logical size on first call; setAttribute mutates the content attribute
-  // which would double on every redraw if we re-read it.
-  if (!c.dataset.lw) { c.dataset.lw = c.getAttribute('width'); c.dataset.lh = c.getAttribute('height'); }
-  const W = parseInt(c.dataset.lw);
-  const H = parseInt(c.dataset.lh);
+  const dpr  = window.devicePixelRatio || 1;
+  const c    = document.getElementById(id);
+  const cssW = c.clientWidth;
+  const aW   = parseInt(c.getAttribute('width'));
+  const aH   = parseInt(c.getAttribute('height'));
+  const W    = cssW > 10 ? cssW : aW;
+  const H    = Math.round(W / aW * aH);
   c.width  = W * dpr;
   c.height = H * dpr;
   const cx = c.getContext('2d');
   cx.scale(dpr, dpr);
-  return cx;
+  return {cx, W, H};
 }
 function lin(d0,d1,r0,r1) { return v => r0+(v-d0)/(d1-d0)*(r1-r0); }
 
@@ -580,77 +514,10 @@ function rotLabel(cx,text,x,y,col='#9ca3af') {
   cx.textAlign='center'; cx.textBaseline='middle'; cx.fillText(text,0,0); cx.restore();
 }
 
-// ── Chart 1: Klimadiagramm ────────────────────────────────────────────────────
-function drawKlima(hist, _future) {
-  const cx=ctx2('c1'), W=820, CH=360;
-  const p={t:28,r:56,b:44,l:52};
-  const pw=W-p.l-p.r, ph=CH-p.t-p.b;
-  const TH=Math.round(ph*.58), PR=ph-TH-12, PTOP=p.t+TH+12;
-
-  cx.fillStyle='#ffffff'; cx.fillRect(0,0,W,CH);
-  cx.fillStyle='#f9fafb'; cx.fillRect(p.l,p.t,pw,TH);
-  cx.fillStyle='#f0f9ff'; cx.fillRect(p.l,PTOP,pw,PR);
-
-  const TMIN=-14,TMAX=30,PMAX=110;
-  const xp=i=>p.l+(i+.5)*(pw/12);
-  const BW=pw/12*.65;
-  const tY=lin(TMIN,TMAX,p.t+TH,p.t);
-  const pY=lin(0,PMAX,PTOP+PR,PTOP);
-
-  // frost months
-  hist.tmin.forEach((v,i)=>{ if(v<0){ cx.fillStyle='rgba(219,234,254,.5)'; cx.fillRect(p.l+i*(pw/12),p.t,pw/12,TH); }});
-
-  // temp grid
-  [-10,-5,0,5,10,15,20,25].forEach(t=>{
-    if(t<TMIN||t>TMAX) return;
-    const y=tY(t), z=t===0;
-    grid(cx,p.l,y,p.l+pw,y, z?'#d1d5db':'#e5e7eb');
-    lbl(cx,`${t}°`,p.l-7,y, z?'#6b7280':'#9ca3af','11px Inter,sans-serif','right');
-  });
-  // prec grid
-  [0,20,40,60,80,100].forEach(v=>{
-    const y=pY(v);
-    grid(cx,p.l,y,p.l+pw,y, v===0?'#bfdbfe':'#dbeafe');
-    lbl(cx,`${v}`,p.l+pw+7,y,'#93c5fd','11px Inter,sans-serif','left');
-  });
-  // month separators
-  for(let i=1;i<12;i++){
-    const x=p.l+i*(pw/12);
-    grid(cx,x,p.t,x,p.t+TH,'#f3f4f6');
-    grid(cx,x,PTOP,x,PTOP+PR,'#eff6ff');
-  }
-
-  // temp band
-  const bpts=[...hist.tmax.map((v,i)=>[xp(i),tY(v)]),...[...hist.tmin.map((v,i)=>[xp(i),tY(v)])].reverse()];
-  polygon(cx,bpts,'rgba(234,88,12,.12)');
-  polyline(cx,hist.tmax.map((v,i)=>[xp(i),tY(v)]),'#ea580c',1.5);
-  polyline(cx,hist.tmin.map((v,i)=>[xp(i),tY(v)]),'#3b82f6',1.5);
-  const tm=hist.tmin.map((v,i)=>(v+hist.tmax[i])/2);
-  polyline(cx,tm.map((v,i)=>[xp(i),tY(v)]),'#d97706',2.5);
-
-  // prec bars
-  hist.prec.forEach((v,i)=>{
-    const bx=p.l+i*(pw/12)+(pw/12-BW)/2;
-    const bh=(v/PMAX)*PR, by=PTOP+PR-bh;
-    cx.fillStyle='rgba(59,130,246,.35)'; cx.fillRect(bx,by,BW,bh);
-    cx.fillStyle='rgba(59,130,246,.8)'; cx.fillRect(bx,by,BW,2);
-    lbl(cx,`${v}`,bx+BW/2,by-8,'#93c5fd','10px Inter,sans-serif');
-  });
-
-  lbl(cx,'°C',p.l-36,p.t+TH/2,'#9ca3af'); lbl(cx,'mm',p.l+pw+34,PTOP+PR/2,'#93c5fd');
-  lbl(cx,'Temperatur',p.l+pw/2,p.t-14,'#6b7280'); lbl(cx,'Niederschlag',p.l+pw/2,PTOP-9,'#93c5fd');
-  MO.forEach((m,i)=>lbl(cx,m,xp(i),PTOP+PR+22,'#9ca3af'));
-
-  const txi=hist.tmax.indexOf(Math.max(...hist.tmax));
-  const tni=hist.tmin.indexOf(Math.min(...hist.tmin));
-  lbl(cx,`${hist.tmax[txi]}°C`,xp(txi),tY(hist.tmax[txi])-12,'#ea580c','bold 11px Inter,sans-serif');
-  lbl(cx,`${hist.tmin[tni]}°C`,xp(tni),tY(hist.tmin[tni])+13,'#3b82f6','bold 11px Inter,sans-serif');
-}
-
 // ── Chart 2: Warming trend ────────────────────────────────────────────────────
 function drawTrend(hist, future) {
-  const cx=ctx2('c2'), W=820, CH=220;
-  const p={t:28,r:28,b:44,l:56};
+  const {cx,W,H:CH}=ctx2('c2');
+  const p={t:28,r:28,b:44,l:44};
   const pw=W-p.l-p.r, ph=CH-p.t-p.b;
   const allP=['1970-2000',...PERIODS];
   const xp=i=>p.l+i*(pw/(allP.length-1));
@@ -665,6 +532,7 @@ function drawTrend(hist, future) {
   const yY=lin(yMin,yMax,p.t+ph,p.t);
 
   cx.fillStyle='#ffffff'; cx.fillRect(0,0,W,CH);
+  lbl(cx,'Jahresmitteltemperatur (°C) – Erwärmungstrend SSP2-4.5',p.l,14,'#374151','600 11px Inter,sans-serif','left');
   cx.fillStyle='#f9fafb'; cx.fillRect(p.l,p.t,pw,ph);
 
   for(let t=Math.ceil(yMin*2)/2;t<=yMax;t+=.5){
@@ -699,13 +567,12 @@ function drawTrend(hist, future) {
     const col=i===0?'#374151':PC[per];
     lbl(cx,per,xp(i),p.t+ph+22,col,'11px Inter,sans-serif');
   });
-  rotLabel(cx,'Jahresmittel °C',18,p.t+ph/2);
 }
 
 // ── Chart 3: Monthly profiles ─────────────────────────────────────────────────
 function drawProfiles(hist, future) {
-  const cx=ctx2('c3'), W=820, CH=280;
-  const p={t:24,r:28,b:36,l:52};
+  const {cx,W,H:CH}=ctx2('c3');
+  const p={t:28,r:28,b:36,l:44};
   const pw=W-p.l-p.r, ph=CH-p.t-p.b;
   const xp=i=>p.l+(i+.5)*(pw/12);
   const hTm=hist.tmin.map((v,i)=>(v+hist.tmax[i])/2);
@@ -715,6 +582,7 @@ function drawProfiles(hist, future) {
   const yY=lin(yMin,yMax,p.t+ph,p.t);
 
   cx.fillStyle='#ffffff'; cx.fillRect(0,0,W,CH);
+  lbl(cx,'Monatlicher Temperaturgang (°C) – Ensemble-Mittel je Periode',p.l,14,'#374151','600 11px Inter,sans-serif','left');
   cx.fillStyle='#f9fafb'; cx.fillRect(p.l,p.t,pw,ph);
 
   for(let t=Math.ceil(yMin/5)*5;t<=yMax;t+=5){
@@ -738,13 +606,12 @@ function drawProfiles(hist, future) {
   hTm.forEach((v,i)=>dot(cx,xp(i),yY(v),3,'#374151'));
 
   MO.forEach((m,i)=>lbl(cx,m,xp(i),p.t+ph+20,'#9ca3af'));
-  rotLabel(cx,'Tagesmittel °C',18,p.t+ph/2);
 }
 
 // ── Chart 4: Precipitation ────────────────────────────────────────────────────
 function drawPrec(hist, future) {
-  const cx=ctx2('c4'), W=820, CH=240;
-  const p={t:24,r:28,b:36,l:52};
+  const {cx,W,H:CH}=ctx2('c4');
+  const p={t:28,r:28,b:36,l:44};
   const pw=W-p.l-p.r, ph=CH-p.t-p.b;
   const em41=ensM(future,'2041-2060','prec'), em81=ensM(future,'2081-2100','prec');
 
@@ -752,6 +619,7 @@ function drawPrec(hist, future) {
   const yY=lin(0,yMax,p.t+ph,p.t);
 
   cx.fillStyle='#ffffff'; cx.fillRect(0,0,W,CH);
+  lbl(cx,'Monatlicher Niederschlag (mm) – Historisch vs. Zukunft',p.l,14,'#374151','600 11px Inter,sans-serif','left');
   cx.fillStyle='#f9fafb'; cx.fillRect(p.l,p.t,pw,ph);
 
   for(let v=0;v<=yMax;v+=20){
@@ -765,9 +633,9 @@ function drawPrec(hist, future) {
   const off=-((3*BW+2*GAP)/2);
   const xb=i=>p.l+(i+.5)*gW;
   const DS=[
-    {data:hist.prec, fill:'rgba(59,130,246,.45)', top:'#3b82f6'},
-    {data:em41,      fill:'rgba(217,119,6,.45)',  top:'#d97706'},
-    {data:em81,      fill:'rgba(220,38,38,.45)',  top:'#dc2626'},
+    {data:hist.prec, fill:'#3b82f6aa', top:'#3b82f6'},
+    {data:em41,      fill:'#d97706aa', top:'#d97706'},
+    {data:em81,      fill:'#dc2626aa', top:'#dc2626'},
   ];
   DS.forEach((ds,di)=>{
     ds.data.forEach((v,i)=>{
@@ -785,8 +653,84 @@ function drawPrec(hist, future) {
   const d = v => (v>=0?'+':'')+v;
   document.getElementById('prec-note').textContent =
     `Jahressummen — hist.: ${sH} mm · 2041–2060: ${s41} mm (${d(s41-sH)} mm) · 2081–2100: ${s81} mm (${d(s81-sH)} mm)`;
-  rotLabel(cx,'Niederschlag mm',18,p.t+ph/2);
 }
+
+// ── Chart 5: Seasonal warming ─────────────────────────────────────────────────────
+function drawSeasons(hist, future) {
+  const {cx,W,H:CH}=ctx2('c5');
+  const p={t:28,r:28,b:36,l:44};
+  const pw=W-p.l-p.r, ph=CH-p.t-p.b;
+
+  const SIDX=[[11,0,1],[2,3,4],[5,6,7],[8,9,10]];
+  const SNAMES=['Winter','Frühjahr','Sommer','Herbst'];
+  const sm=(tmin,tmax,ix)=>ix.reduce((s,i)=>s+(tmin[i]+tmax[i])/2,0)/ix.length;
+
+  const hS=SIDX.map(ix=>sm(hist.tmin,hist.tmax,ix));
+  const fS=PERIODS.map(per=>
+    SIDX.map((ix,si)=>avg(MODELS.map(m=>sm(future[per][m].tmin,future[per][m].tmax,ix)))-hS[si])
+  );
+
+  const yMax=Math.ceil(Math.max(...fS.flat())*4)/4+0.15;
+  const yY=lin(0,yMax,p.t+ph,p.t);
+
+  cx.fillStyle='#fff'; cx.fillRect(0,0,W,CH);
+  lbl(cx,'Saisonale Erwärmung (°C) vs. 1970–2000',p.l,14,'#374151','600 11px Inter,sans-serif','left');
+  cx.fillStyle='#f9fafb'; cx.fillRect(p.l,p.t,pw,ph);
+
+  for(let t=0;t<=yMax;t+=.5){
+    const y=yY(t), isInt=Number.isInteger(t);
+    grid(cx,p.l,y,p.l+pw,y,t===0?'#d1d5db':isInt?'#e5e7eb':'#f3f4f6');
+    if(isInt) lbl(cx,t===0?'0°':`+${t.toFixed(0)}°`,p.l-6,y,'#9ca3af','11px Inter,sans-serif','right');
+  }
+  for(let i=1;i<4;i++) grid(cx,p.l+i*(pw/4),p.t,p.l+i*(pw/4),p.t+ph,'#f3f4f6');
+
+  const gW=pw/4, nP=PERIODS.length;
+  const BW=gW*.16, GAP=gW*.03;
+  const off=-(nP*BW+(nP-1)*GAP)/2;
+
+  SIDX.forEach((_,si)=>{
+    const x0=p.l+(si+.5)*gW;
+    PERIODS.forEach((per,pi)=>{
+      const v=fS[pi][si], bh=(v/yMax)*ph;
+      const bx=x0+off+pi*(BW+GAP);
+      cx.fillStyle=PC[per]+'aa'; cx.fillRect(bx,p.t+ph-bh,BW,bh);
+      cx.fillStyle=PC[per]; cx.fillRect(bx,p.t+ph-bh,BW,2);
+      lbl(cx,`+${v.toFixed(1)}°`,bx+BW/2,p.t+ph-bh-8,PC[per],'bold 9px Inter,sans-serif');
+    });
+    lbl(cx,SNAMES[si],x0,p.t+ph+20,'#9ca3af','11px Inter,sans-serif');
+  });
+}
+
+// ── Details toggle: draw charts lazily at correct resolution ────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('more-data').addEventListener('toggle', function() {
+    if (this.open && _chartHist) {
+      drawTrend(_chartHist, _chartFuture);
+      drawProfiles(_chartHist, _chartFuture);
+      drawPrec(_chartHist, _chartFuture);
+      drawSeasons(_chartHist, _chartFuture);
+    }
+  });
+});
+
+// ── Header city-mode on scroll ───────────────────────────────────────────────
+const _PIN = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="16" viewBox="0 0 11 13" fill="none" aria-hidden="true"><path d="M5.5 1C3.57 1 2 2.57 2 4.5C2 7.25 5.5 12 5.5 12S9 7.25 9 4.5C9 2.57 7.43 1 5.5 1Z" stroke="#d97706" stroke-width="1.2" stroke-linejoin="round"/><circle cx="5.5" cy="4.5" r="1.3" stroke="#d97706" stroke-width="1.1"/></svg>`;
+let _scrollCity = '';
+
+function _syncHeader() {
+  const el = document.querySelector('.header-tag');
+  if (!el) return;
+  if (window.scrollY > 80 && _scrollCity) {
+    el.removeAttribute('href');
+    el.classList.add('city-mode');
+    el.innerHTML = _PIN + _scrollCity;
+  } else {
+    el.setAttribute('href', './about.html');
+    el.classList.remove('city-mode');
+    el.textContent = 'Über das Projekt';
+  }
+}
+window.addEventListener('scroll', _syncHeader, {passive: true});
 
 // ── Klimazwilling ─────────────────────────────────────────────────────────────
 const COUNTRIES = {
@@ -908,7 +852,7 @@ function _renderTwinView() {
 
 // ── Twin comparison chart ──────────────────────────────────────────────────────
 function drawTwinCompare(twinFeat, targetFeat, mode, cityName, twinName, period) {
-  const cx=ctx2('c-twin'), W=820, CH=280;
+  const {cx,W,H:CH}=ctx2('c-twin');
   const SEAS=['DJF','MAM','JJA','SON'];
   const SNAMES=['Winter','Frühling','Sommer','Herbst'];
   const TC='#d97706', WC='#0891b2';
