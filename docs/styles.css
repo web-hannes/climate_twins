@@ -55,7 +55,7 @@ footer {
 .footer-sources a { color: var(--light); text-decoration: underline; text-underline-offset: 2px; }
 .footer-sources a:hover { color: var(--muted); }
 .footer-disclaimer { font-size: 12px; color: var(--light); }
-.footer-nav { display: flex; gap: 16px; }
+.footer-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 16px; }
 .footer-nav a { font-size: 12px; color: var(--light); text-decoration: none; }
 .footer-nav a:hover { color: var(--muted); }
 
@@ -63,6 +63,6 @@ site-header, site-footer { display: contents; }
 
 @media (max-width: 600px) {
   header { padding: 16px 20px; }
-  .header-tag { display: none; }
+  .header-tag { max-width: 45%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   footer { flex-direction: column; padding: 20px; }
 }

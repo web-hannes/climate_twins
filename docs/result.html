@@ -74,28 +74,30 @@ main { flex: 1; max-width: 860px; margin: 0 auto; width: 100%; padding: 40px 24p
 }
 
 /* ── More-data collapsible ── */
-.more-data { margin-top: 48px; display: flex; flex-direction: column; align-items: center; }
+.more-data { display: flex; flex-direction: column; align-items: center; }
 .more-data summary {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
+  gap: 6px;
+  font-size: 15px;
   font-weight: 600;
-  color: #fff;
-  letter-spacing: .04em;
+  color: var(--text);
   cursor: pointer;
   user-select: none;
   list-style: none;
-  padding: 10px 22px;
-  background: var(--amber);
-  border-radius: 999px;
+  padding: 0;
+  background: none;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--amber);
 }
 .more-data summary::-webkit-details-marker { display: none; }
 .more-data summary::before {
   content: '';
   display: inline-block;
   width: 16px; height: 16px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%23ffffff' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%23d97706' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-size: 14px;
   background-position: center;
   background-repeat: no-repeat;
@@ -103,8 +105,18 @@ main { flex: 1; max-width: 860px; margin: 0 auto; width: 100%; padding: 40px 24p
   flex-shrink: 0;
 }
 .more-data[open] summary::before { transform: rotate(180deg); }
-.more-data summary:hover { background: var(--amber-dark); }
+.more-data summary:hover { text-decoration-color: var(--amber-dark); }
 .more-data-body { padding-top: 32px; width: 100%; }
+.more-data-row {
+  margin-top: 48px; display: flex; justify-content: center;
+  align-items: center; gap: 32px; flex-wrap: wrap;
+}
+.more-data-map-link {
+  font-size: 15px; font-weight: 600; color: var(--text);
+  text-decoration: underline; text-decoration-thickness: 2px;
+  text-underline-offset: 4px; text-decoration-color: var(--amber);
+}
+.more-data-map-link:hover { text-decoration-color: var(--amber-dark); }
 
 /* ── Chart card ── */
 .chart-card {
@@ -298,8 +310,13 @@ canvas { display: block; width: 100%; height: auto; }
       <div id="twin-list"></div>
     </div>
 
+    <div class="more-data-row">
     <details class="more-data" id="more-data">
       <summary id="more-data-summary">Mehr Klimadaten</summary>
+    </details>
+    <a class="more-data-map-link" href="./map.html">Map bekannter Städte</a>
+    </div>
+    <div id="more-data-body-outer" style="display:none">
       <div class="more-data-body">
 
     <!-- Chart 2: Warming trend -->
@@ -359,7 +376,7 @@ canvas { display: block; width: 100%; height: auto; }
     </div>
 
       </div><!-- .more-data-body -->
-    </details>
+    </div><!-- #more-data-body-outer -->
 
   </div><!-- #content -->
 </main>
@@ -426,7 +443,7 @@ function render(D) {
     <div class="stat"><div class="v" style="color:#d97706" data-val="${f21Tm-hTm}" data-dec="1" data-sfx="°C" data-signed="1">–</div><div class="l">Erwärmung bis 2021–2040</div></div>
     <div class="stat"><div class="v" style="color:#ea580c" data-val="${f41Tm-hTm}" data-dec="1" data-sfx="°C" data-signed="1">–</div><div class="l">Erwärmung bis 2041–2060</div></div>
     <div class="stat"><div class="v" style="color:#dc2626" data-val="${f81Tm-hTm}" data-dec="1" data-sfx="°C" data-signed="1">–</div><div class="l">Erwärmung bis 2081–2100</div></div>
-    <div class="stat"><div class="v" style="color:#3b82f6" data-val="${hPrec}" data-dec="0" data-sfx=" mm">–</div><div class="l">Jahresniederschlag hist.</div></div>
+    <div class="stat"><div class="v" style="color:#3b82f6" data-val="${hPrec}" data-dec="0" data-sfx=" mm">–</div><div class="l">Jahresniederschlag 1970–2000</div></div>
   `;
 
   // Show content
@@ -704,6 +721,7 @@ function drawSeasons(hist, future) {
 // ── Details toggle: draw charts lazily at correct resolution ────────────────
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('more-data').addEventListener('toggle', function() {
+    document.getElementById('more-data-body-outer').style.display = this.open ? 'block' : 'none';
     if (this.open && _chartHist) {
       drawTrend(_chartHist, _chartFuture);
       drawProfiles(_chartHist, _chartFuture);

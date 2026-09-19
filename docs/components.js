@@ -17,6 +17,7 @@ class SiteFooter extends HTMLElement {
   </div>
   <nav class="footer-nav">
     <a href="./about.html">Über das Projekt</a>
+    <a href="./map.html">Map bekannter Städte</a>
     <a href="./legal.html">Impressum</a>
     <a href="./privacy.html">Datenschutz</a>
   </nav>

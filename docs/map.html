@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Klimatrajektorien – Klimazwilling</title>
+<link rel="icon" type="image/svg+xml" href="./icons/icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./styles.css">
+<style>
+main {
+  flex: 1; max-width: 900px; margin: 0 auto; width: 100%;
+  padding: 48px 24px 80px;
+}
+
+/* ── Page header ── */
+.page-header { margin-bottom: 32px; }
+.page-header h1 {
+  font-size: clamp(22px, 3.5vw, 30px); font-weight: 700;
+  letter-spacing: -.03em; line-height: 1.2; margin-bottom: 6px;
+}
+.page-header p { font-size: 13px; color: var(--muted); }
+
+/* ── Map ── */
+.map-wrap {
+  position: relative;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden;
+}
+#map-svg { display: block; width: 100%; height: auto; }
+
+/* country paths */
+.country {
+  fill: #edf0f3; stroke: #fff; stroke-width: 1;
+  stroke-linejoin: round;
+}
+.country.de { fill: #e2e6ea; }
+
+/* trajectory lines */
+.traj-line {
+  fill: none; stroke: #374151; stroke-width: 1.2;
+  stroke-dasharray: 3 3; opacity: .55;
+}
+
+/* dots */
+.dot-origin { fill: #111827; stroke: #fff; stroke-width: 2; cursor: pointer; }
+.dot-twin   { stroke: #fff; stroke-width: 1.5; cursor: pointer; }
+.city-touch { fill: transparent; cursor: pointer; }
+
+/* city name labels */
+.city-name {
+  font-family: Inter, sans-serif; font-size: 12px; font-weight: 600;
+  fill: var(--text); pointer-events: none;
+  paint-order: stroke; stroke: #edf0f3; stroke-width: 3; stroke-linejoin: round;
+}
+
+/* ── Tooltip ── */
+.map-tooltip {
+  display: none; position: absolute;
+  background: #fff; border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,.1);
+  pointer-events: none; z-index: 10; min-width: 190px;
+}
+.map-tooltip.visible { display: block; }
+.tt-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: 4px; }
+.tt-city  { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+.tt-row   { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+.tt-link  {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 12px; font-weight: 600; color: var(--amber); text-decoration: none;
+}
+.tt-link:hover { text-decoration: underline; }
+
+/* ── Legend ── */
+.legend-wrap {
+  display: flex; align-items: center; flex-wrap: wrap;
+  gap: 6px 16px; margin-top: 20px; padding: 0 4px;
+}
+.legend-label {
+  font-size: 11px; font-weight: 600; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--muted); margin-right: 4px;
+}
+.legend-item {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--muted);
+}
+.legend-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  border: 2px solid #fff; box-shadow: 0 0 0 1px #d1d5db; flex-shrink: 0;
+}
+.legend-line {
+  width: 22px; height: 0;
+  border-top: 2px dashed #374151; opacity: .55;
+}
+
+/* ── Mobile city list ── */
+.city-list {
+  display: none; margin-top: 24px;
+  border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+}
+.city-list-section { border-bottom: 1px solid var(--border); }
+.city-list-section:last-child { border-bottom: none; }
+.cl-city-header {
+  padding: 10px 16px 8px; font-size: 13px; font-weight: 700;
+  background: var(--surface); display: flex; align-items: center; gap: 8px;
+}
+.cl-city-dot {
+  width: 10px; height: 10px; border-radius: 50%; background: #111827; flex-shrink: 0;
+  border: 1.5px solid #fff; box-shadow: 0 0 0 1px #d1d5db;
+}
+.city-list-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 16px; border-top: 1px solid #f9fafb; font-size: 13px;
+}
+.cl-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; border: 1.5px solid #fff; box-shadow: 0 0 0 1px #d1d5db; }
+.cl-period  { font-size: 11px; color: var(--muted); min-width: 76px; }
+.cl-twin    { flex: 1; font-weight: 500; }
+.cl-country { font-size: 11px; color: var(--muted); }
+.cl-link    { font-size: 12px; color: var(--amber); text-decoration: none; }
+.cl-link:hover { text-decoration: underline; }
+
+@media (max-width: 600px) {
+  main { padding: 28px 16px 60px; }
+  .city-name { display: none; }
+  .city-list { display: block; }
+  .map-tooltip { display: none !important; }
+}
+</style>
+<script src="./components.js" defer></script>
+</head>
+<body>
+
+<site-header></site-header>
+
+<main>
+  <div class="page-header">
+    <h1>Klimatrajektorien bekannter Städte</h1>
+    <p>Schwarzer Punkt = Stadt heute · Linien führen zu den Klimazwillingen · verglichen mit dem historischen Mittel 1970–2000 · SSP2-4.5 · Ensemble-Mittel</p>
+    <p style="margin-top:8px">Eine ähnliche Berechnung des Umweltbundesamtes: <a href="https://www.umweltbundesamt.de/klimatische-zwillingsstaedte-in-europa#" target="_blank" rel="noopener" style="color:var(--amber);text-decoration:underline;text-underline-offset:2px">Klimatische Zwillingsstädte in Europa</a></p>
+  </div>
+
+  <div class="map-wrap">
+    <svg id="map-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div class="map-tooltip" id="tooltip">
+      <div class="tt-label" id="tt-label"></div>
+      <div class="tt-city"  id="tt-city"></div>
+      <div class="tt-row"   id="tt-row"></div>
+      <a class="tt-link" id="tt-link" href="#">Klimazwilling ansehen →</a>
+    </div>
+  </div>
+
+  <div class="legend-wrap">
+    <span class="legend-label">Legende</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#111827"></span>Ursprungsstadt</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#d97706"></span>Klimazwilling 2041–2060</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#ea580c"></span>Klimazwilling 2061–2080</span>
+    <span class="legend-item"><span class="legend-line"></span>Klimatrajektorie</span>
+  </div>
+
+  <div class="city-list" id="city-list"></div>
+</main>
+
+<site-footer></site-footer>
+
+<script>
+const TWIN_PERIODS = ['2041-2060', '2061-2080'];
+const TWIN_COLORS  = { '2041-2060': '#d97706', '2061-2080': '#ea580c' };
+const PERIOD_LABEL = { '2041-2060': '2041–2060', '2061-2080': '2061–2080' };
+
+const LABEL_OFFSET = {
+  'Berlin':    { dx:  14, dy: 0, anchor: 'start' },
+  'Hamburg':   { dx: -14, dy: 0, anchor: 'end'   },
+  'München':   { dx:  14, dy: 0, anchor: 'start' },
+  'Köln':      { dx: -14, dy: 0, anchor: 'end'   },
+  'Frankfurt': { dx: -14, dy: 0, anchor: 'end'   },
+  'Leipzig':   { dx: -14, dy: 0, anchor: 'end'   },
+  'Stuttgart': { dx:  14, dy: 0, anchor: 'start' },
+  'Dresden':   { dx:  14, dy: 0, anchor: 'start' },
+};
+
+let _mapData  = null;
+let _cityData = {};
+
+function svgEl(tag, attrs) {
+  const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+  return el;
+}
+
+function geoToSVG(lon, lat) {
+  const { cos50, scale, tx, ty } = _mapData.proj;
+  const px = (lon - 10.0) * cos50;
+  return {
+    x: Math.round((px * scale + tx) * 10) / 10,
+    y: Math.round((-lat * scale + ty) * 10) / 10,
+  };
+}
+
+function getTwin(d, period) {
+  if (!d || !d.twins || !d.twins[period]) return null;
+  const modes   = d.twins[period];
+  const modeKey = Object.keys(modes).find(k => k !== 'target_features');
+  if (!modeKey) return null;
+  const mode = modes[modeKey];
+  if (!mode || !mode.results || !mode.results.length) return null;
+  return mode.results[0];
+}
+
+function showTooltip(info, e) {
+  const tt   = document.getElementById('tooltip');
+  const wrap = document.querySelector('.map-wrap');
+  const rect = wrap.getBoundingClientRect();
+  document.getElementById('tt-label').textContent = info.label;
+  document.getElementById('tt-city').textContent  = info.city;
+  document.getElementById('tt-row').textContent   = info.row;
+  document.getElementById('tt-link').href         = info.link;
+  const x = e.clientX - rect.left + 14;
+  const y = e.clientY - rect.top  + 14;
+  tt.style.left = `${Math.min(x, rect.width  - 220)}px`;
+  tt.style.top  = `${Math.min(y, rect.height - 140)}px`;
+  tt.classList.add('visible');
+}
+
+function hideTooltip() {
+  document.getElementById('tooltip').classList.remove('visible');
+}
+
+function addDotEvents(el, info, href) {
+  el.addEventListener('mouseenter', e => showTooltip(info, e));
+  el.addEventListener('mouseleave', hideTooltip);
+  el.addEventListener('click', () => { window.location.href = href; });
+}
+
+function renderMap() {
+  if (!_mapData) return;
+  const svg = document.getElementById('map-svg');
+  svg.setAttribute('viewBox', `0 0 ${_mapData.vw} ${_mapData.vh}`);
+  svg.innerHTML = '';
+
+  // Country paths
+  const gCountries = svgEl('g', {});
+  for (const feat of _mapData.features) {
+    gCountries.appendChild(svgEl('path', {
+      d: feat.paths.join(' '),
+      class: 'country' + (feat.iso === 'DE' ? ' de' : ''),
+    }));
+  }
+  svg.appendChild(gCountries);
+
+  // Trajectory lines (bottom layer)
+  const gLines = svgEl('g', {});
+  for (const city of _mapData.cities) {
+    const d = _cityData[city.plz];
+    if (!d) continue;
+    const pts = [{ x: city.x, y: city.y }];
+    for (const period of TWIN_PERIODS) {
+      const twin = getTwin(d, period);
+      if (twin) pts.push(geoToSVG(twin.lon, twin.lat));
+    }
+    if (pts.length > 1) {
+      gLines.appendChild(svgEl('polyline', {
+        points: pts.map(p => `${p.x},${p.y}`).join(' '),
+        class:  'traj-line',
+      }));
+    }
+  }
+  svg.appendChild(gLines);
+
+  // Twin dots
+  const gTwins = svgEl('g', {});
+  for (const city of _mapData.cities) {
+    const d = _cityData[city.plz];
+    if (!d) continue;
+    for (const period of TWIN_PERIODS) {
+      const twin = getTwin(d, period);
+      if (!twin) continue;
+      const pos  = geoToSVG(twin.lon, twin.lat);
+      const col  = TWIN_COLORS[period];
+      const info = {
+        label: `Klimazwilling ${PERIOD_LABEL[period]}`,
+        city:  twin.name,
+        row:   `${twin.country} · Klimazwilling von ${city.name}`,
+        link:  `./result.html?plz=${city.plz}`,
+      };
+      const touch = svgEl('circle', { cx: pos.x, cy: pos.y, r: 18, class: 'city-touch' });
+      const dot   = svgEl('circle', { cx: pos.x, cy: pos.y, r: 6, class: 'dot-twin', fill: col });
+      addDotEvents(touch, info, info.link);
+      addDotEvents(dot,   info, info.link);
+      gTwins.appendChild(touch);
+      gTwins.appendChild(dot);
+    }
+  }
+  svg.appendChild(gTwins);
+
+  // Origin dots + labels (top layer)
+  const gOrigins = svgEl('g', {});
+  for (const city of _mapData.cities) {
+    const lo   = LABEL_OFFSET[city.name] || { dx: 14, dy: 0, anchor: 'start' };
+    const info = {
+      label: 'Ursprungsstadt',
+      city:  city.name,
+      row:   'Deutschland',
+      link:  `./result.html?plz=${city.plz}`,
+    };
+    const touch = svgEl('circle', { cx: city.x, cy: city.y, r: 20, class: 'city-touch' });
+    const dot   = svgEl('circle', { cx: city.x, cy: city.y, r: 7,  class: 'dot-origin' });
+    const lbl   = svgEl('text', {
+      x: city.x + lo.dx, y: city.y + 22,
+      class: 'city-name', 'text-anchor': lo.anchor,
+    });
+    lbl.textContent = city.name;
+    addDotEvents(touch, info, info.link);
+    addDotEvents(dot,   info, info.link);
+    gOrigins.appendChild(touch);
+    gOrigins.appendChild(dot);
+    gOrigins.appendChild(lbl);
+  }
+  svg.appendChild(gOrigins);
+
+  renderCityList();
+}
+
+function renderCityList() {
+  if (!_mapData) return;
+  document.getElementById('city-list').innerHTML = _mapData.cities.map(city => {
+    const d    = _cityData[city.plz];
+    const rows = TWIN_PERIODS.map(period => {
+      const twin = d ? getTwin(d, period) : null;
+      const col  = TWIN_COLORS[period];
+      return `<div class="city-list-row">
+        <span class="cl-dot" style="background:${col}"></span>
+        <span class="cl-period">${PERIOD_LABEL[period]}</span>
+        <span class="cl-twin">${twin ? twin.name : '…'}</span>
+        <span class="cl-country">${twin ? twin.country : ''}</span>
+        <a class="cl-link" href="./result.html?plz=${city.plz}">→</a>
+      </div>`;
+    }).join('');
+    return `<div class="city-list-section">
+      <div class="cl-city-header"><span class="cl-city-dot"></span>${city.name}</div>
+      ${rows}
+    </div>`;
+  }).join('');
+}
+
+async function loadAll() {
+  _mapData = await fetch('./data/europe-paths.json').then(r => r.json());
+  renderMap();
+  await Promise.all(_mapData.cities.map(async city => {
+    try {
+      _cityData[city.plz] = await fetch(`./data/cities/${city.plz}.json`).then(r => r.json());
+    } catch (_) {}
+  }));
+  renderMap();
+}
+
+loadAll();
+</script>
+
+</body>
+</html>
