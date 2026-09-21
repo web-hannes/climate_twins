@@ -37,6 +37,7 @@ header {
 .logo { font-family: 'Bricolage Grotesque', sans-serif; font-size: 18px; font-weight: 800; color: var(--text); text-decoration: none; letter-spacing: -.02em; display: inline-flex; align-items: center; }
 .logo svg { margin-right: 10px; }
 .logo span { color: var(--amber); }
+.logo .tld  { color: var(--text); margin-left: 2px; }
 .header-tag {
   font-size: 13px; font-weight: 500; color: var(--muted);
   text-decoration: underline; text-decoration-color: var(--border);

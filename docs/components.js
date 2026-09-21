@@ -3,7 +3,7 @@ const LOGO_SVG = `<svg width="28" height="28" viewBox="0 0 64 64" xmlns="http://
 class SiteHeader extends HTMLElement {
   connectedCallback() {
     this.innerHTML = `<header>
-  <a class="logo" href="./index.html">${LOGO_SVG}Klima<span>zwilling</span></a>
+  <a class="logo" href="./index.html">${LOGO_SVG}Klima<span>zwilling</span><span class="tld">.org</span></a>
   <a class="header-tag" href="./about.html">Über das Projekt</a>
 </header>`;
   }

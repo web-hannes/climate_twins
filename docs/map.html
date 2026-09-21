@@ -6,9 +6,8 @@
 <meta name="robots" content="noindex">
 <title>Klimatrajektorien – Klimazwilling</title>
 <link rel="icon" type="image/svg+xml" href="./icons/icon.svg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link href="https://fonts.bunny.net/css?family=bricolage-grotesque:800&family=inter:400,500,600,700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./styles.css">
 <style>
 main {
@@ -75,6 +74,23 @@ main {
 }
 .tt-link:hover { text-decoration: underline; }
 
+/* ── Mode toggle ── */
+.map-controls {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+}
+.map-controls-label {
+  font-size: 11px; font-weight: 600; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--muted);
+}
+.mode-toggle { display: inline-flex; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 3px; }
+.mode-btn {
+  font-family: inherit; font-size: 13px; font-weight: 500;
+  padding: 7px 20px; border-radius: 999px; border: none;
+  cursor: pointer; transition: all 0.18s;
+  background: transparent; color: var(--muted); white-space: nowrap;
+}
+.mode-btn.active { background: #fff; color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,.10); }
+
 /* ── Legend ── */
 .legend-wrap {
   display: flex; align-items: center; flex-wrap: wrap;
@@ -139,8 +155,16 @@ main {
 <main>
   <div class="page-header">
     <h1>Klimatrajektorien bekannter Städte</h1>
-    <p>Schwarzer Punkt = Stadt heute · Linien führen zu den Klimazwillingen · verglichen mit dem historischen Mittel 1970–2000 · SSP2-4.5 · Ensemble-Mittel</p>
+    <p>Schwarzer Punkt = Stadt heute · Linien führen zu den Klimazwillingen · <span id="mode-desc">verglichen mit dem historischen Mittel 1970–2000</span> · SSP2-4.5 · Ensemble-Mittel</p>
     <p style="margin-top:8px">Eine ähnliche Berechnung des Umweltbundesamtes: <a href="https://www.umweltbundesamt.de/klimatische-zwillingsstaedte-in-europa#" target="_blank" rel="noopener" style="color:var(--amber);text-decoration:underline;text-underline-offset:2px">Klimatische Zwillingsstädte in Europa</a></p>
+  </div>
+
+  <div class="map-controls">
+    <span class="map-controls-label">Referenz</span>
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="btn-A" onclick="switchMode('A')">1970–2000</button>
+      <button class="mode-btn"        id="btn-B" onclick="switchMode('B')">2021–2040</button>
+    </div>
   </div>
 
   <div class="map-wrap">
@@ -184,6 +208,7 @@ const LABEL_OFFSET = {
 
 let _mapData  = null;
 let _cityData = {};
+let _mode     = 'A';
 
 function svgEl(tag, attrs) {
   const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
@@ -202,12 +227,20 @@ function geoToSVG(lon, lat) {
 
 function getTwin(d, period) {
   if (!d || !d.twins || !d.twins[period]) return null;
-  const modes   = d.twins[period];
-  const modeKey = Object.keys(modes).find(k => k !== 'target_features');
-  if (!modeKey) return null;
-  const mode = modes[modeKey];
-  if (!mode || !mode.results || !mode.results.length) return null;
-  return mode.results[0];
+  const modeData = d.twins[period]['mode_' + _mode];
+  if (!modeData || !modeData.results || !modeData.results.length) return null;
+  return modeData.results[0];
+}
+
+function switchMode(mode) {
+  _mode = mode;
+  document.getElementById('btn-A').classList.toggle('active', mode === 'A');
+  document.getElementById('btn-B').classList.toggle('active', mode === 'B');
+  document.getElementById('mode-desc').textContent =
+    mode === 'A'
+      ? 'verglichen mit dem historischen Mittel 1970–2000'
+      : 'verglichen mit dem nahen Zukunftsklima 2021–2040';
+  renderMap();
 }
 
 function showTooltip(info, e) {
