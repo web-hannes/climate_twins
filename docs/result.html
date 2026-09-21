@@ -37,8 +37,9 @@
 /* ── Layout ── */
 main { flex: 1; max-width: 860px; margin: 0 auto; width: 100%; padding: 40px 24px 80px; }
 
-/* ── Back ── */
-.back { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); text-decoration: none; margin-bottom: 32px; }
+/* ── Top nav (back + map link) ── */
+.top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+.back { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); text-decoration: none; }
 .back:hover { color: var(--amber); }
 
 /* ── City header ── */
@@ -110,12 +111,19 @@ main { flex: 1; max-width: 860px; margin: 0 auto; width: 100%; padding: 40px 24p
   margin-top: 48px; display: flex; justify-content: center;
   align-items: center; gap: 32px; flex-wrap: wrap;
 }
-.more-data-map-link {
+.chart-section-title {
   font-size: 15px; font-weight: 600; color: var(--text);
   text-decoration: underline; text-decoration-thickness: 2px;
   text-underline-offset: 4px; text-decoration-color: var(--amber);
+  margin-bottom: 14px;
 }
-.more-data-map-link:hover { text-decoration-color: var(--amber-dark); }
+.map-nav-link {
+  font-size: 13px; font-weight: 500; color: var(--muted);
+  text-decoration: underline; text-decoration-color: var(--border);
+  text-underline-offset: 3px; text-decoration-thickness: 1px;
+  transition: color .15s, text-decoration-color .15s;
+}
+.map-nav-link:hover { color: var(--text); text-decoration-color: var(--muted); }
 
 /* ── Chart card ── */
 .chart-card {
@@ -266,7 +274,10 @@ canvas { display: block; width: 100%; height: auto; }
   <div id="error" class="hidden"></div>
   <div id="content" class="hidden">
 
-    <a class="back" href="./index.html">← Zurück</a>
+    <div class="top-nav">
+      <a class="back" href="./index.html">← Zurück</a>
+      <a class="map-nav-link" href="./map.html">Map bekannter Städte →</a>
+    </div>
 
     <!-- City header -->
     <div class="city-header">
@@ -313,13 +324,13 @@ canvas { display: block; width: 100%; height: auto; }
     <details class="more-data" id="more-data">
       <summary id="more-data-summary">Mehr Klimadaten</summary>
     </details>
-    <a class="more-data-map-link" href="./map.html">Map bekannter Städte</a>
     </div>
     <div id="more-data-body-outer" style="display:none">
       <div class="more-data-body">
 
     <!-- Chart 2: Warming trend -->
     <div class="section">
+      <div class="chart-section-title">Jahresmitteltemperatur (°C) – Erwärmungstrend SSP2-4.5</div>
       <div class="chart-card">
         <canvas id="c2" width="820" height="220"></canvas>
       </div>
@@ -335,6 +346,7 @@ canvas { display: block; width: 100%; height: auto; }
 
     <!-- Chart 3: Monthly profiles -->
     <div class="section">
+      <div class="chart-section-title">Monatlicher Temperaturgang (°C) – Ensemble-Mittel je Periode</div>
       <div class="chart-card">
         <canvas id="c3" width="820" height="280"></canvas>
       </div>
@@ -350,6 +362,7 @@ canvas { display: block; width: 100%; height: auto; }
 
     <!-- Chart 4: Precipitation -->
     <div class="section">
+      <div class="chart-section-title">Monatlicher Niederschlag (mm) – Historisch vs. Zukunft</div>
       <div class="chart-card">
         <canvas id="c4" width="820" height="240"></canvas>
       </div>
@@ -363,6 +376,7 @@ canvas { display: block; width: 100%; height: auto; }
 
     <!-- Chart 5: Seasonal warming -->
     <div class="section">
+      <div class="chart-section-title">Saisonale Erwärmung (°C) vs. 1970–2000</div>
       <div class="chart-card">
         <canvas id="c5" width="820" height="200"></canvas>
       </div>
@@ -533,10 +547,11 @@ function rotLabel(cx,text,x,y,col='#9ca3af') {
 // ── Chart 2: Warming trend ────────────────────────────────────────────────────
 function drawTrend(hist, future) {
   const {cx,W,H:CH}=ctx2('c2');
-  const p={t:28,r:28,b:44,l:44};
+  const p={t:12,r:28,b:44,l:44};
   const pw=W-p.l-p.r, ph=CH-p.t-p.b;
+  const xPad=36;
   const allP=['1970-2000',...PERIODS];
-  const xp=i=>p.l+i*(pw/(allP.length-1));
+  const xp=i=>p.l+xPad+i*((pw-2*xPad)/(allP.length-1));
 
   const histAM=annMean(hist.tmin,hist.tmax);
   const pMeans={};
@@ -548,7 +563,6 @@ function drawTrend(hist, future) {
   const yY=lin(yMin,yMax,p.t+ph,p.t);
 
   cx.fillStyle='#ffffff'; cx.fillRect(0,0,W,CH);
-  lbl(cx,'Jahresmitteltemperatur (°C) – Erwärmungstrend SSP2-4.5',p.l,14,'#374151','600 11px Inter,sans-serif','left');
   cx.fillStyle='#f9fafb'; cx.fillRect(p.l,p.t,pw,ph);
 
   for(let t=Math.ceil(yMin*2)/2;t<=yMax;t+=.5){
@@ -588,7 +602,7 @@ function drawTrend(hist, future) {
 // ── Chart 3: Monthly profiles ─────────────────────────────────────────────────
 function drawProfiles(hist, future) {
   const {cx,W,H:CH}=ctx2('c3');
-  const p={t:28,r:28,b:36,l:44};
+  const p={t:12,r:28,b:36,l:44};
   const pw=W-p.l-p.r, ph=CH-p.t-p.b;
   const xp=i=>p.l+(i+.5)*(pw/12);
   const hTm=hist.tmin.map((v,i)=>(v+hist.tmax[i])/2);
@@ -598,7 +612,6 @@ function drawProfiles(hist, future) {
   const yY=lin(yMin,yMax,p.t+ph,p.t);
 
   cx.fillStyle='#ffffff'; cx.fillRect(0,0,W,CH);
-  lbl(cx,'Monatlicher Temperaturgang (°C) – Ensemble-Mittel je Periode',p.l,14,'#374151','600 11px Inter,sans-serif','left');
   cx.fillStyle='#f9fafb'; cx.fillRect(p.l,p.t,pw,ph);
 
   for(let t=Math.ceil(yMin/5)*5;t<=yMax;t+=5){
@@ -627,7 +640,7 @@ function drawProfiles(hist, future) {
 // ── Chart 4: Precipitation ────────────────────────────────────────────────────
 function drawPrec(hist, future) {
   const {cx,W,H:CH}=ctx2('c4');
-  const p={t:28,r:28,b:36,l:44};
+  const p={t:12,r:28,b:36,l:44};
   const pw=W-p.l-p.r, ph=CH-p.t-p.b;
   const em41=ensM(future,'2041-2060','prec'), em81=ensM(future,'2081-2100','prec');
 
@@ -635,7 +648,6 @@ function drawPrec(hist, future) {
   const yY=lin(0,yMax,p.t+ph,p.t);
 
   cx.fillStyle='#ffffff'; cx.fillRect(0,0,W,CH);
-  lbl(cx,'Monatlicher Niederschlag (mm) – Historisch vs. Zukunft',p.l,14,'#374151','600 11px Inter,sans-serif','left');
   cx.fillStyle='#f9fafb'; cx.fillRect(p.l,p.t,pw,ph);
 
   for(let v=0;v<=yMax;v+=20){
@@ -674,7 +686,7 @@ function drawPrec(hist, future) {
 // ── Chart 5: Seasonal warming ─────────────────────────────────────────────────────
 function drawSeasons(hist, future) {
   const {cx,W,H:CH}=ctx2('c5');
-  const p={t:28,r:28,b:36,l:44};
+  const p={t:12,r:28,b:36,l:44};
   const pw=W-p.l-p.r, ph=CH-p.t-p.b;
 
   const SIDX=[[11,0,1],[2,3,4],[5,6,7],[8,9,10]];
@@ -690,7 +702,6 @@ function drawSeasons(hist, future) {
   const yY=lin(0,yMax,p.t+ph,p.t);
 
   cx.fillStyle='#fff'; cx.fillRect(0,0,W,CH);
-  lbl(cx,'Saisonale Erwärmung (°C) vs. 1970–2000',p.l,14,'#374151','600 11px Inter,sans-serif','left');
   cx.fillStyle='#f9fafb'; cx.fillRect(p.l,p.t,pw,ph);
 
   for(let t=0;t<=yMax;t+=.5){
@@ -720,7 +731,8 @@ function drawSeasons(hist, future) {
 // ── Details toggle: draw charts lazily at correct resolution ────────────────
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('more-data').addEventListener('toggle', function() {
-    document.getElementById('more-data-body-outer').style.display = this.open ? 'block' : 'none';
+    const outer = document.getElementById('more-data-body-outer');
+    outer.style.display = this.open ? 'block' : 'none';
     if (this.open && _chartHist) {
       drawTrend(_chartHist, _chartFuture);
       drawProfiles(_chartHist, _chartFuture);

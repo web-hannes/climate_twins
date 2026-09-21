@@ -15,6 +15,7 @@ import csv
 import json
 import math
 import pathlib
+import re
 import sys
 from typing import Optional
 
@@ -34,9 +35,17 @@ VARS    = ["tmin", "tmax", "prec"]
 
 # ── PLZ-Lookup ─────────────────────────────────────────────────────────────────
 
+# Erkennt Firmennamen / Organisationen (keine Ortsnamen)
+_NON_PLACE_RE = re.compile(
+    r'\b(Geschäftsstelle|Niederlassung|Versicherung|Krankenkasse'
+    r'|Sparkasse|Gesellschaft|Stiftung|Bundesamt|Landesamt)\b',
+    re.IGNORECASE,
+)
+
 def load_plz_db() -> dict:
     """Liest DE.txt und gibt {plz: {name, state, lat, lon}} zurück.
-    Bei mehreren Einträgen pro PLZ wird gemittelt (Zentroid der PLZ-Fläche)."""
+    Bei mehreren Einträgen pro PLZ wird gemittelt (Zentroid der PLZ-Fläche).
+    Firmen- und Organisationseinträge werden übersprungen."""
     db: dict[str, dict] = {}
     with open(DE_TXT, encoding="utf-8") as f:
         for line in f:
@@ -44,6 +53,8 @@ def load_plz_db() -> dict:
             if len(parts) < 11:
                 continue
             plz, name, state = parts[1], parts[2], parts[3]
+            if _NON_PLACE_RE.search(name):
+                continue
             try:
                 lat, lon = float(parts[9]), float(parts[10])
             except ValueError:
