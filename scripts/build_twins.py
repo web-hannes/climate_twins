@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import pathlib
 import sys
 from typing import Optional
@@ -65,7 +66,9 @@ def to_seasonal(monthly: dict) -> dict:
 # ── Raster-Abtastung ───────────────────────────────────────────────────────────
 
 def _nodata_guard(val: float, nodata) -> Optional[float]:
-    if nodata is not None and abs(val - nodata) < 1:
+    if math.isnan(val):
+        return None
+    if nodata is not None and not math.isnan(nodata) and abs(val - nodata) < 1:
         return None
     return round(float(val), 3)
 
@@ -77,6 +80,8 @@ def sample_hist(lon: float, lat: float) -> Optional[dict]:
         folder = WC_DIR / "1970-2000" / f"wc2.1_10m_{var}"
         for m in range(1, 13):
             path = folder / f"wc2.1_10m_{var}_{m:02d}.tif"
+            if not path.exists():
+                raise FileNotFoundError(f"WorldClim-Datei fehlt: {path}")
             with rasterio.open(path) as src:
                 v = list(src.sample([(lon, lat)]))[0][0]
                 val = _nodata_guard(float(v), src.nodata)
@@ -94,18 +99,20 @@ def sample_period_ensemble(lon: float, lat: float, period: str) -> Optional[dict
         for model in MODELS:
             fname = f"wc2.1_10m_{var}_{model}_ssp245_{period}.tif"
             path  = WC_DIR / period / fname
+            if not path.exists():
+                raise FileNotFoundError(f"WorldClim-Datei fehlt: {path}")
             with rasterio.open(path) as src:
+                row = list(src.sample([(lon, lat)]))[0]
                 bands = []
-                for b in range(1, src.count + 1):
-                    v = list(src.sample([(lon, lat)], indexes=b))[0][0]
+                for v in row:
                     val = _nodata_guard(float(v), src.nodata)
                     if val is None:
                         return None
                     bands.append(val)
                 monthly_models.append(bands)
         # Ensemble-Mittel über Modelle, pro Monat
-        ensemble = [float(np.mean([m[i] for m in monthly_models])) for i in range(12)]
-        result[var] = [round(v, 3) for v in ensemble]
+        ensemble = [float(np.mean([model[i] for model in monthly_models])) for i in range(12)]
+        result[var] = [round(e, 3) for e in ensemble]
     return result
 
 
@@ -117,7 +124,7 @@ def sample_candidates() -> None:
 
     rows = []
     skipped = 0
-    for i, row in df.iterrows():
+    for pos, (_, row) in enumerate(df.iterrows()):
         lon, lat = float(row.lon), float(row.lat)
 
         hist = sample_hist(lon, lat)
@@ -140,8 +147,8 @@ def sample_candidates() -> None:
         r.update({f"p21_{k}":  v  for k, v in to_seasonal(p21).items()})
         rows.append(r)
 
-        if (i + 1) % 100 == 0:
-            print(f"  {i+1}/{len(df)} …")
+        if (pos + 1) % 100 == 0:
+            print(f"  {pos+1}/{len(df)} …")
 
     result = pd.DataFrame(rows)
     result.to_csv(CAND_CLIMATE, index=False)
@@ -189,6 +196,24 @@ def build_twins(plz_list: list[str]) -> None:
     tree_hist = cKDTree(P_hist_z)
     tree_p21  = cKDTree(P_p21_z)
 
+    def make_twin(idx: int, dist: float, mode: str) -> dict:
+        df = cands_hist if mode == "A" else cands_p21
+        c  = df.iloc[idx]
+        fk = "hist" if mode == "A" else "p21"
+        return {
+            "name":       c["name"],
+            "ascii_name": c.ascii_name,
+            "country":    c.country,
+            "lat":        float(c.lat),
+            "lon":        float(c.lon),
+            "population": int(c.population),
+            "distance":   round(float(dist), 4),
+            "features": {
+                k: round(float(c[f"{fk}_{k}"]), 2)
+                for k in FEAT_COLS
+            },
+        }
+
     for plz in plz_list:
         json_path = CITIES_DIR / f"{plz}.json"
         if not json_path.exists():
@@ -197,29 +222,15 @@ def build_twins(plz_list: list[str]) -> None:
 
         city = json.loads(json_path.read_text())
 
-        def make_twin(idx: int, dist: float, mode: str) -> dict:
-            df  = cands_hist if mode == "A" else cands_p21
-            c   = df.iloc[idx]
-            fk  = "hist" if mode == "A" else "p21"
-            return {
-                "name":       c["name"],
-                "ascii_name": c.ascii_name,
-                "country":    c.country,
-                "lat":        float(c.lat),
-                "lon":        float(c.lon),
-                "population": int(c.population),
-                "distance":   round(float(dist), 4),
-                "features": {
-                    k: round(float(c[f"{fk}_{k}"]), 2)
-                    for k in FEAT_COLS
-                },
-            }
-
         city["twins"] = {}
         for target_period in TARGET_PERIODS:
             fut_monthly = {
                 var: [
-                    round(float(np.mean([city["future"][target_period][m][var][i] for m in MODELS])), 3)
+                    round(float(np.mean(
+                        [v for model in MODELS
+                         if (v := city["future"][target_period][model][var][i]) is not None]
+                        or [float("nan")]
+                    )), 3)
                     for i in range(12)
                 ]
                 for var in VARS

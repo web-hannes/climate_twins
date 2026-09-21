@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import math
 import pathlib
 import sys
 from typing import Optional
@@ -68,9 +69,11 @@ def load_plz_db() -> dict:
 # ── WorldClim-Abtastung ────────────────────────────────────────────────────────
 
 def _nodata_guard(val: float, nodata) -> Optional[float]:
-    if nodata is not None and abs(val - nodata) < 1:
+    if math.isnan(val):
         return None
-    return round(float(val), 2)
+    if nodata is not None and not math.isnan(nodata) and abs(val - nodata) < 1:
+        return None
+    return round(float(val), 3)
 
 
 def sample_monthly_files(var: str, lon: float, lat: float) -> list:
@@ -79,6 +82,8 @@ def sample_monthly_files(var: str, lon: float, lat: float) -> list:
     vals = []
     for m in range(1, 13):
         path = folder / f"wc2.1_10m_{var}_{m:02d}.tif"
+        if not path.exists():
+            raise FileNotFoundError(f"WorldClim-Datei fehlt: {path}")
         with rasterio.open(path) as src:
             v = list(src.sample([(lon, lat)]))[0][0]
             vals.append(_nodata_guard(float(v), src.nodata))
@@ -87,12 +92,11 @@ def sample_monthly_files(var: str, lon: float, lat: float) -> list:
 
 def sample_multiband(path: pathlib.Path, lon: float, lat: float) -> list:
     """12-Band-GeoTIFF (Zukunft) → Liste mit 12 Werten."""
-    vals = []
+    if not path.exists():
+        raise FileNotFoundError(f"WorldClim-Datei fehlt: {path}")
     with rasterio.open(path) as src:
-        for b in range(1, src.count + 1):
-            v = list(src.sample([(lon, lat)], indexes=b))[0][0]
-            vals.append(_nodata_guard(float(v), src.nodata))
-    return vals
+        row = list(src.sample([(lon, lat)]))[0]
+        return [_nodata_guard(float(v), src.nodata) for v in row]
 
 
 def build_climate(lon: float, lat: float) -> dict:

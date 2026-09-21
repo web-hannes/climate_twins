@@ -18,6 +18,7 @@ Mindestpopulation: 100.000 (anpassbar via MIN_POP)
 
 import csv
 import pathlib
+import sys
 
 # ── Konfiguration ──────────────────────────────────────────────────────────────
 
@@ -146,4 +147,10 @@ def extract():
         print(f"  {country}  ({region_label.get(country,'?'):4})  {count:4} Städte")
 
 if __name__ == "__main__":
+    if not INPUT.exists():
+        sys.exit(
+            f"Fehler: Eingabedatei nicht gefunden: {INPUT}\n"
+            "→ cities15000.txt von https://download.geonames.org/export/dump/ herunterladen"
+            " und ins Projektverzeichnis legen."
+        )
     extract()

@@ -141,10 +141,8 @@ CITIES = [
 
 out_cities = []
 for c in CITIES:
-    p = project(c['lon'], c['lat'])
-    if p:
-        sx, sy = to_svg(*p)
-        out_cities.append({'name': c['name'], 'plz': c['plz'], 'x': sx, 'y': sy})
+    sx, sy = to_svg(*project(c['lon'], c['lat']))
+    out_cities.append({'name': c['name'], 'plz': c['plz'], 'x': sx, 'y': sy})
 
 # ── Write output ──────────────────────────────────────────────────────────────
 out_dir  = os.path.join(os.path.dirname(__file__), '..', 'docs', 'data')
