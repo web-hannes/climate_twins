@@ -288,6 +288,17 @@ canvas { display: block; width: 100%; height: auto; }
       <div class="city-coords" id="city-coords"></div>
     </div>
 
+    <!-- No-data notice for coastal / island PLZ -->
+    <div id="nodata" class="hidden">
+      <div class="twin-placeholder" style="margin-bottom:48px">
+        <div class="icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.35"><path d="M2 17c2.5-2 5-2 7.5 0s5 2 7.5 0 5-2 7.5 0"/><path d="M2 12c2.5-2 5-2 7.5 0s5 2 7.5 0 5-2 7.5 0"/><path d="M2 7c2.5-2 5-2 7.5 0s5 2 7.5 0 5-2 7.5 0"/></svg>
+        </div>
+        <h3>Keine Klimadaten verfügbar</h3>
+        <p>Diese Postleitzahl liegt an der Küste, auf einer Insel oder in unmittelbarer Nähe von Gewässern. Das verwendete Klimaraster enthält dort keine Landpunkte, daher konnten keine Klimadaten berechnet werden.<br>Versuche es gerne mit der PLZ einer nahegelegenen Stadt.</p>
+      </div>
+    </div>
+
     <!-- Stats -->
     <div class="stats" id="stats-row"></div>
 
@@ -443,6 +454,19 @@ function render(D) {
   document.getElementById('city-coords').textContent =
     `${Math.abs(D.lat).toFixed(4)}° ${D.lat>=0?'N':'S'} · ${Math.abs(D.lon).toFixed(4)}° ${D.lon>=0?'O':'W'}`;
 
+  // Show content (city header always visible)
+  document.getElementById('loading').classList.add('hidden');
+  document.getElementById('content').classList.remove('hidden');
+
+  // No climate data for coastal / island locations
+  if (!D.twins) {
+    document.getElementById('nodata').classList.remove('hidden');
+    document.getElementById('twin-section').classList.add('hidden');
+    document.getElementById('more-data').closest('.more-data-row').style.display = 'none';
+    document.getElementById('more-data-body-outer').style.display = 'none';
+    return;
+  }
+
   // Stats
   const hTm    = annMean(hist.tmin, hist.tmax);
   const hPrec  = hist.prec.reduce((a,b)=>a+b,0);
@@ -458,10 +482,6 @@ function render(D) {
     <div class="stat"><div class="v" style="color:#dc2626" data-val="${f81Tm-hTm}" data-dec="1" data-sfx="°C" data-signed="1">–</div><div class="l">Erwärmung bis 2081–2100</div></div>
     <div class="stat"><div class="v" style="color:#3b82f6" data-val="${hPrec}" data-dec="0" data-sfx=" mm">–</div><div class="l">Jahresniederschlag 1970–2000</div></div>
   `;
-
-  // Show content
-  document.getElementById('loading').classList.add('hidden');
-  document.getElementById('content').classList.remove('hidden');
   animateStats();
 
   // Draw charts
@@ -799,16 +819,7 @@ function renderTwins(city) {
   const p21tmin = MO.map((_,i) => avg(MODELS.map(m => city.future['2021-2040'][m].tmin[i])));
   const p21tmax = MO.map((_,i) => avg(MODELS.map(m => city.future['2021-2040'][m].tmax[i])));
   _p21Tavg = p21tmin.reduce((s,v,i) => s + (v + p21tmax[i]) / 2, 0) / 12;
-  if (!city.twins) {
-    document.getElementById('twin-section').innerHTML = `
-      <div class="section-title">Dein Klimazwilling</div>
-      <div class="twin-placeholder">
-        <div class="icon">&#127758;</div>
-        <h3>Keine Zwillingsdaten</h3>
-        <p>Für diesen Ort konnten leider keine Klimazwillinge berechnet werden.</p>
-      </div>`;
-    return;
-  }
+
   _twins = city.twins;
   _renderTwinView();
 }
