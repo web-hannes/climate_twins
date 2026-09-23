@@ -262,6 +262,47 @@ canvas { display: block; width: 100%; height: auto; }
   .tr-bar-wrap { display: none; }
   .tr-country { display: none; }
 }
+
+.warning-card {
+  border: 2px solid #dc2626;
+  border-radius: 12px;
+  background: #fff5f5;
+  padding: 18px 22px;
+  margin: 24px 0 8px;
+  color: #1a1a1a;
+}
+.warning-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.warning-card-header strong {
+  font-size: 1rem;
+  color: #dc2626;
+}
+.warning-icon {
+  font-size: 1.2rem;
+  color: #dc2626;
+  line-height: 1;
+}
+.warning-card p {
+  margin: 0 0 10px;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: #374151;
+}
+.warning-card ul {
+  margin: 0;
+  padding-left: 1.3em;
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: #374151;
+}
+.warning-card ul li {
+  margin-bottom: 5px;
+}
+
 </style>
 <script src="./components.js" defer></script>
 </head>
@@ -329,6 +370,15 @@ canvas { display: block; width: 100%; height: auto; }
         <canvas id="c-twin" width="820" height="280"></canvas>
       </div>
       <div id="twin-list"></div>
+    </div>
+
+
+    <div class="warning-card">
+      <div class="warning-card-header">
+        <span class="warning-icon">&#9888;</span>
+        <strong>Wichtig</strong>
+      </div>
+      <p>Auch wenn manche dieser Veränderungen auf den ersten Blick positiv wirken können – sie sind Teil des Klimawandels mit ernsthaften Folgen: häufigere Extremwetterereignisse, steigende Meeresspiegel, Artensterben, Ernteausfälle und noch viele mehr.</p>
     </div>
 
     <div class="more-data-row">
